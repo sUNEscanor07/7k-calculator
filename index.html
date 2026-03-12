@@ -1,0 +1,2066 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Stat Calculator 7k Rebirth</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            background: linear-gradient(135deg, #0d1b2a 0%, #1a2847 50%, #0d1b2a 100%);
+            color: #e8e8e8;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0d1b2a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d4a574;
+            border-radius: 8px;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+            input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+        .glass-panel {
+            background: rgba(13, 27, 42, 0.85);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(212, 165, 116, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .character-preview-card {
+            background-color: rgba(13, 27, 42, 0.7);
+            border: 1px solid rgba(212, 165, 116, 0.3);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .character-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(212, 165, 116, 0.2);
+        }
+
+            .character-header h2 {
+                font-size: 1.5rem;
+                font-weight: bold;
+                color: #d4a574;
+            }
+
+        .character-details {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .character-image-section {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .character-image-wrapper {
+            width: 180px;
+            height: 180px;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            border: 2px solid #d4a574;
+            background-color: #0d1b2a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .character-image-wrapper img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .character-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem 1.5rem;
+            flex-grow: 1;
+        }
+
+        .info-item-full {
+            grid-column: span 2;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #f5f5f5;
+            font-size: 0.875rem;
+        }
+
+            .info-item i {
+                color: #d4a574;
+            }
+
+            .info-item strong {
+                color: #e8c9a0;
+            }
+
+        .potential-section {
+            background-color: rgba(13, 27, 42, 0.5);
+            border: 1px solid rgba(212, 165, 116, 0.2);
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+
+        .potential-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(13, 27, 42, 0.4);
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            border: 1px solid rgba(212, 165, 116, 0.1);
+        }
+
+        .potential-item-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #f5f5f5;
+            font-size: 0.875rem;
+        }
+
+        .potential-item i {
+            color: #d4a574;
+            background: rgba(212, 165, 116, 0.1);
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        .potential-item span {
+            color: #d4a574;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .equipment-layout-container {
+            display: block;
+        }
+
+        .weapons-armors-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+        }
+
+        .equipment-card {
+            background-color: rgba(13, 27, 42, 0.5);
+            border: 1px solid rgba(212, 165, 116, 0.2);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .equipment-card-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            color: #d4a574;
+            font-weight: bold;
+            font-size: 0.8rem;
+            border-bottom: 1px solid rgba(212, 165, 116, 0.1);
+            padding-bottom: 0.5rem;
+        }
+
+        .equipment-icon-main {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            border: 2px solid #d4a574;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: rgba(13, 27, 42, 0.8);
+            margin-bottom: 0.25rem;
+        }
+
+        .equipment-stats-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .equipment-stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.8rem;
+            color: #f5f5f5;
+        }
+
+            .equipment-stat-item i {
+                color: #d4a574;
+                font-size: 0.9rem;
+            }
+
+            .equipment-stat-item.main-stat {
+                color: #e8c9a0;
+                font-weight: bold;
+            }
+
+            .equipment-stat-item.sub-stat {
+                color: #b0b0b0;
+            }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(13, 27, 42, 0.5);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d4a574;
+            border-radius: 10px;
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #d4a574, #e8c9a0);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+
+        input, select {
+            background-color: #0d1b2a !important;
+            border: 1.5px solid #d4a574 !important;
+            color: #f5f5f5 !important;
+            border-radius: 0.5rem;
+        }
+
+            input:focus, select:focus {
+                border-color: #e8c9a0 !important;
+                outline: none;
+                box-shadow: 0 0 0 2px rgba(212, 165, 116, 0.2) !important;
+            }
+
+        .btn-secondary {
+            background-color: #1a2847;
+            color: #e8e8e8;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid #d4a574;
+        }
+
+            .btn-secondary:hover {
+                background-color: #2a3d5f;
+                border-color: #e8c9a0;
+            }
+
+        .btn-primary {
+            background: linear-gradient(to right, #d4a574, #e8c9a0);
+            color: #0d1b2a;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+        }
+
+            .btn-primary:hover {
+                opacity: 0.9;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);
+            }
+
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.75rem;
+        }
+
+        .stat-card {
+            background: rgba(26, 40, 71, 0.6);
+            border: 1px solid rgba(212, 165, 116, 0.15);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #d4a574;
+        }
+
+        .weapon-card {
+            border-left: 4px solid #e8a87c;
+        }
+
+        .armor-card {
+            border-left: 4px solid #6ba3d4;
+        }
+
+        .accessory-card {
+            border-left: 4px solid #c9956f;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #d4a574;
+        }
+
+        .stat-bonus {
+            font-size: 0.875rem;
+            color: #6ba3d4;
+            font-weight: 500;
+        }
+
+        .preview-card {
+            background: linear-gradient(135deg, rgba(26, 40, 71, 0.95) 0%, rgba(13, 27, 42, 0.95) 100%);
+            border: 2px solid #d4a574;
+            border-radius: 1rem;
+            padding: 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            box-shadow: inset 0 0 20px rgba(212, 165, 116, 0.08), 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .preview-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 0.75rem;
+            border: 2px solid #d4a574;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.375rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-amber {
+            background-color: rgba(212, 165, 116, 0.15);
+            color: #d4a574;
+            border: 1px solid #d4a574;
+        }
+
+        .multiplier-btn {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+            .multiplier-btn.active {
+                background-color: #d4a574;
+                color: #0d1b2a;
+            }
+
+            .multiplier-btn.inactive {
+                background-color: #1a2847;
+                color: #6b7280;
+                border: 1px solid #d4a574;
+            }
+
+        /* Book Layout Styles */
+        .book-container {
+            background: #2c1810; /* Dark wood/leather color */
+            border: 8px solid #3d2b1f;
+            border-radius: 1rem;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .book-page {
+            background: #fdf6e3; /* Off-white paper color */
+            background-image: radial-gradient(#e6dfcf 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: #2c1810;
+            border-radius: 0.5rem;
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.05);
+        }
+
+        .book-sidebar {
+            background: #3d2b1f;
+            color: #d4a574;
+        }
+
+        .sidebar-tab {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem 0 0 0.5rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s;
+            font-weight: 600;
+            text-align: left;
+            width: 100%;
+            display: block;
+        }
+
+            .sidebar-tab.active {
+                background: #fdf6e3;
+                color: #2c1810;
+                box-shadow: -4px 0 10px rgba(0,0,0,0.1);
+            }
+
+            .sidebar-tab:not(.active):hover {
+                background: rgba(212, 165, 116, 0.1);
+            }
+
+        .hero-grid-card {
+            width: 100px;
+            height: 140px;
+            background: #000;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            position: relative;
+            border: 2px solid #d4a574;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+            .hero-grid-card:hover {
+                transform: scale(1.05);
+                z-index: 10;
+            }
+
+            .hero-grid-card img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .hero-grid-card .hero-name-tag {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: rgba(0, 0, 0, 0.8);
+                color: #fff;
+                font-size: 16px;
+                text-align: center;
+                padding: 0px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+
+
+        .category-header-bar {
+            background: #1a1a1a;
+            color: #d4a574;
+            padding: 0.375rem 3rem;
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: bold;
+            display: inline-block;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(212, 165, 116, 0.3);
+        }
+
+        .category-divider {
+            position: relative;
+            text-align: center;
+            margin: 1rem 0 0.75rem;
+            width: 100%;
+            clear: both;
+        }
+
+            .category-divider::before {
+                content: "";
+                position: absolute;
+                top: 50%;
+                left: 0;
+                right: 0;
+                height: 3px;
+                background: linear-gradient(to right, transparent, rgba(212, 165, 116, 0.5), transparent);
+                z-index: 0;
+            }
+
+            .category-divider::after {
+                content: "◆";
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                color: rgba(212, 165, 116, 0.5);
+                font-size: 10px;
+                z-index: 0;
+            }
+
+        .book-top-nav {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .top-nav-btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            color: #d4a574;
+        }
+
+            .top-nav-btn.active {
+                background: #d4a574;
+                color: #3d2b1f;
+            }
+
+        .book-search-container {
+            background: #fff;
+            border-radius: 999px;
+            padding: 0.25rem 0.75rem;
+            display: flex;
+            align-items: center;
+            border: 1px solid #d4a574;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+            .book-search-container input {
+                background: transparent !important;
+                border: none !important;
+                color: #2c1810 !important;
+                font-size: 0.875rem;
+                width: 150px;
+            }
+
+                .book-search-container input:focus {
+                    box-shadow: none !important;
+                }
+
+        .multiplier-btn:hover:not(:disabled) {
+            border-color: #fbbf24;
+        }
+
+        /* Minimal Fantasy Character Info Styles */
+        .character-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .character-banner {
+            border-bottom: 2px solid #d4a574;
+            padding-bottom: 0.75rem;
+        }
+
+        .character-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #d4a574;
+            margin: 0;
+        }
+
+        .character-content {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        .portrait-frame {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .preview-image {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            border: 2px solid #d4a574;
+            box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);
+        }
+
+        .character-info-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .info-group {
+            border: 1px solid #d4a574;
+            border-radius: 0.375rem;
+            padding: 0.75rem;
+            background: rgba(26, 40, 71, 0.4);
+        }
+
+            .info-group label {
+                display: flex;
+                align-items: center;
+                gap: 0.375rem;
+                font-size: 0.75rem;
+                font-weight: 600;
+                color: #d4a574;
+                margin-bottom: 0.375rem;
+            }
+
+            .info-group input,
+            .info-group select {
+                font-size: 0.875rem;
+            }
+
+        .equipment-bar {
+            grid-column: 1 / -1;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(26, 40, 71, 0.4);
+            border: 1px solid #d4a574;
+            border-radius: 0.375rem;
+        }
+
+        .equipment-bar-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #d4a574;
+            margin-bottom: 0.75rem;
+        }
+
+        .equipment-icons {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .equipment-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 0.375rem;
+            border: 2px solid;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: all 0.2s ease;
+        }
+
+            .equipment-icon:hover {
+                transform: scale(1.05);
+                box-shadow: 0 0 12px rgba(212, 165, 116, 0.4);
+            }
+
+            .equipment-icon.weapon {
+                border-color: #e8a87c;
+                background: rgba(232, 168, 124, 0.08);
+            }
+
+            .equipment-icon.armor {
+                border-color: #6ba3d4;
+                background: rgba(107, 163, 212, 0.08);
+            }
+
+            .equipment-icon.accessory {
+                border-color: #c9956f;
+                background: rgba(201, 149, 111, 0.08);
+            }
+
+            .equipment-icon.empty {
+                border-color: rgba(100, 116, 139, 0.3);
+                background: rgba(30, 41, 59, 0.2);
+                opacity: 0.5;
+            }
+
+        @media (max-width: 768px) {
+            .character-content {
+                grid-template-columns: 1fr;
+            }
+
+            .preview-image {
+                width: 150px;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-6">
+
+    <div class="max-w-screen-2xl mx-auto">
+        <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="p-3 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg shadow-lg"><i class="ph-fill ph-sword text-2xl text-white"></i></div>
+                <div>
+                    <h1 class="text-3xl font-bold text-gradient">Character Stat Calculator</h1>
+                    <p class="text-sm text-slate-400 mt-1">By CloneEscanor "V.1"</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="exportData()" class="btn-secondary"><i class="ph-bold ph-download-simple"></i>บันทึกข้อมูล (.json)</button>
+                <button onclick="openCollectionModal()" class="btn-secondary"><i class="ph-bold ph-book-open"></i>สมุดอัศวิน</button>
+                <label class="btn-primary cursor-pointer">
+                    <i class="ph-bold ph-upload-simple"></i>โหลดข้อมูล
+                    <input type="file" id="import-file" class="hidden" accept=".json" onchange="importData(event)">
+                </label>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <main class="lg:col-span-2 space-y-6">
+                <!-- Character Info -->
+                <section class="character-preview-card">
+                    <div class="character-header">
+                        <h2 id="banner-title-label">ข้อมูลตัวละคร</h2>
+                    </div>
+                    <div class="character-details">
+                        <div class="character-image-section">
+                            <div class="character-image-wrapper">
+                                <img id="prev-image" src="" alt="Character">
+                            </div>
+                            <div class="info-group mt-2 w-full">
+                                <label class="text-[10px]"><i class="ph-fill ph-link"></i>URL รูปภาพ</label>
+                                <input type="text" id="inp-image" value="https://play-lh.googleusercontent.com/_ocPd2cOaJUvE8cCFsq-co5DBJO6bcAXXmcp6PGyTh9DqIqvo0Tgtx_dnVTz2Edz7MhUJbX7wJcmiPUGxHDG310" class="w-full text-[10px] p-1">
+                            </div>
+                        </div>
+                        <div class="character-info-grid">
+                            <div class="info-group">
+                                <label><i class="ph-fill ph-user"></i>ชื่อตัวละคร</label>
+                                <input type="text" id="inp-name" value="ตัวเปล่า" class="w-full font-bold text-lg bg-transparent border-none p-0 focus:ring-0">
+                            </div>
+                            <div class="info-group">
+                                <label><i class="ph-fill ph-sword"></i>ประเภทพลังโจมตี</label>
+                                <select id="inp-atkType" class="w-full bg-transparent border-none p-0 focus:ring-0 text-lg font-bold">
+                                    <option>กายภาพ</option>
+                                    <option>เวทย์</option>
+                                </select>
+                            </div>
+                            <div class="info-group">
+                                <label><i class="ph-fill ph-shield"></i>สายตัวละคร</label>
+                                <select id="inp-classType" class="w-full bg-transparent border-none p-0 focus:ring-0 text-lg font-bold">
+                                    <option value="none">เลือกสายตัวละคร</option>
+                                    <option value="attack">สายโจมตี</option>
+                                    <option value="magic">สายเวทย์</option>
+                                    <option value="defense">สายป้องกัน</option>
+                                    <option value="support">สายสนับสนุน</option>
+                                    <option value="balance">สายสมดุล</option>
+                                </select>
+                            </div>
+                            <div class="info-group">
+                                <label><i class="ph-fill ph-star"></i>โบนัสข้ามขีดจำกัด (LB)</label>
+                                <div id="prev-lb-display" class="text-lg font-bold text-white">-</div>
+                            </div>
+                            <div class="info-group info-item-full">
+                                <label><i class="ph-fill ph-polygon"></i>เซตโบนัส</label>
+                                <div id="prev-active-sets-display" class="text-lg font-bold text-white">-</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="potential-section">
+                        <h4 class="font-bold text-amber-400 mb-2 flex items-center gap-2"><i class="ph-fill ph-sparkle"></i>ศักยภาพ</h4>
+                        <div id="potential-preview-grid" class="grid grid-cols-3 gap-3">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-bold text-amber-400 flex items-center gap-2"><i class="ph-fill ph-armor"></i>อุปกรณ์สวมใส่</h3>
+                        <div class="equipment-layout-container">
+                            <div id="prev-weapons-armors-display" class="weapons-armors-grid"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Stat Modifiers -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <section class="glass-panel rounded-xl p-6"><div class="flex justify-between items-center mb-4"><h3 class="text-lg font-bold text-sky-400 flex items-center gap-2"><i class="ph-fill ph-chart-bar"></i>ค่าสถานะพื้นฐาน</h3><button onclick="resetGroup('base')" class="btn-secondary btn-sm"><i class="ph-bold ph-arrow-counter-clockwise"></i>รีเซ็ต</button></div><div id="base-stats-container" class="space-y-2"></div></section>
+                    <section class="glass-panel rounded-xl p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-bold text-purple-400 flex items-center gap-2"><i class="ph-fill ph-sparkle"></i>โบนัสข้ามขีดจำกัด (LB)</h3>
+                            <button onclick="resetGroup('lb')" class="btn-secondary btn-sm"><i class="ph-bold ph-arrow-counter-clockwise"></i>รีเซ็ต</button>
+                        </div>
+                        <div class="info-group mb-4">
+                            <label>ระดับ LB</label>
+                            <select id="inp-lbLevel" class="w-full"></select>
+                        </div>
+                        <div id="lb-selections-container" class="space-y-3 mb-4"></div>
+                        <div id="lb-stats-container" class="space-y-2 border-t border-slate-700/50 pt-4"></div>
+                    </section>
+                    <section class="glass-panel rounded-xl p-6 md:col-span-2">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-bold text-pink-400 flex items-center gap-2"><i class="ph-fill ph-lightning"></i>ศักยภาพ (Potential)</h3>
+                            <button onclick="resetGroup('potential')" class="btn-secondary btn-sm"><i class="ph-bold ph-arrow-counter-clockwise"></i>รีเซ็ต</button>
+                        </div>
+                        <div id="potential-stats-container" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+                    </section>
+                </div>
+
+                <!-- Equipment -->
+                <section class="glass-panel rounded-xl p-6">
+                    <div class="flex justify-between items-center mb-4"><h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i class="ph-fill ph-shield-check"></i>อุปกรณ์สวมใส่</h2><button onclick="resetEquipments()" class="btn-secondary btn-sm"><i class="ph-bold ph-arrow-counter-clockwise"></i>รีเซ็ต</button></div>
+                    <div id="equipments-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                </section>
+
+                <!-- Sets -->
+                <section class="glass-panel rounded-xl p-6">
+                    <div id="sets-container"></div>
+                </section>
+            </main>
+
+            <aside class="space-y-6">
+                <!-- Final Stats -->
+                <section class="glass-panel rounded-xl p-6 sticky top-6">
+                    <div class="section-header mb-4 flex items-center gap-2"><i class="ph-fill ph-calculator text-amber-500 text-xl"></i><h2 class="text-xl font-bold text-white">สถานะสุดท้าย</h2></div>
+                    <div id="final-stats-container" class="space-y-1"></div>
+                </section>
+            </aside>
+        </div>
+    </div>
+
+    <script>
+        const ALL_STATS = [
+            { id: 'atk', label: 'พลังโจมตี', icon: 'ph-sword', mainDefault: 304, subDefault: 50 },
+            { id: 'def', label: 'พลังป้องกัน', icon: 'ph-shield', mainDefault: 189, subDefault: 30 },
+            { id: 'hp', label: 'พลังชีวิต', icon: 'ph-heart', mainDefault: 1079, subDefault: 180 },
+            { id: 'atk_pct', label: 'พลังโจมตี %', icon: 'ph-sword', mainDefault: 28, subDefault: 5 },
+            { id: 'def_pct', label: 'พลังป้องกัน %', icon: 'ph-shield', mainDefault: 28, subDefault: 5 },
+            { id: 'hp_pct', label: 'พลังชีวิต %', icon: 'ph-heart', mainDefault: 28, subDefault: 5 },
+            { id: 'atkSpd', label: 'ความเร็วโจมตี', icon: 'ph-timer', mainDefault: 0, subDefault: 4 },
+            { id: 'crit', label: 'อัตราคริติคอล', icon: 'ph-target', suffix: '%', mainDefault: 24, subDefault: 4 },
+            { id: 'critDmg', label: 'ความเสียหายคริติคอล', icon: 'ph-sparkle', suffix: '%', mainDefault: 36, subDefault: 6 },
+            { id: 'weakPointAtk', label: 'โจมตีจุดอ่อน', icon: 'ph-crosshair', suffix: '%', mainDefault: 28, subDefault: 5 },
+            { id: 'blockRate', label: 'อัตราบล็อก', icon: 'ph-shield-check', suffix: '%', mainDefault: 24, subDefault: 4 },
+            { id: 'dmgRed', label: 'ลดความเสียหาย', icon: 'ph-shield-slash', suffix: '%', mainDefault: 16, subDefault: 0 },
+            { id: 'effHit', label: 'ผลเข้าเป้า', icon: 'ph-arrow-circle-right', suffix: '%', mainDefault: 30, subDefault: 5 },
+            { id: 'effRes', label: 'ต้านทานผล', icon: 'ph-shield-plus', suffix: '%', mainDefault: 30, subDefault: 5 }
+        ];
+
+        const CLASS_BASE_STATS = {
+            attack: { atk: 1500, def: 571, hp: 3326, atkSpd: 29, crit: 5, critDmg: 150, weakPointAtk: 0, blockRate: 0, dmgRed: 0, effHit: 0, effRes: 0 },
+            magic: { atk: 1500, def: 571, hp: 3326, atkSpd: 29, crit: 5, critDmg: 150, weakPointAtk: 0, blockRate: 0, dmgRed: 0, effHit: 0, effRes: 0 },
+            defense: { atk: 727, def: 892, hp: 4825, atkSpd: 19, crit: 5, critDmg: 150, weakPointAtk: 0, blockRate: 0, dmgRed: 0, effHit: 0, effRes: 0 },
+            support: { atk: 1095, def: 675, hp: 4458, atkSpd: 19, crit: 5, critDmg: 150, weakPointAtk: 0, blockRate: 0, dmgRed: 0, effHit: 0, effRes: 0 },
+            balance: { atk: 1306, def: 659, hp: 3693, atkSpd: 25, crit: 5, critDmg: 150, weakPointAtk: 0, blockRate: 0, dmgRed: 0, effHit: 0, effRes: 0 }
+        };
+
+        const LB_STATS_CONFIG = {
+            C0: { type: 'fixed', stats: {} },
+            C1: { type: 'choice', options: { atk_pct: 12, def_pct: 12 }, label: 'เลือก C1' },
+            C2: { type: 'choice', options: { atk_pct: 6, def_pct: 6 }, label: 'เลือก C2' },
+            C3: { type: 'fixed', stats: { hp_pct: 18 } },
+            C4: { type: 'choice', options: { crit: 18, critDmg: 24, weakPointAtk: 20, blockRate: 18, dmgRed: 10, effHit: 24 }, label: 'เลือก C4' },
+            C5: { type: 'choice', options: { atk_pct: 12, def_pct: 12 }, label: 'เลือก C5' },
+            C6: { type: 'choice', options: { atk_pct: 6, def_pct: 6 }, label: 'เลือก C6' },
+            C7: { type: 'fixed', stats: { atk_pct: 2, def_pct: 2, hp_pct: 2 } },
+            C8: { type: 'fixed', stats: { atk_pct: 2, def_pct: 2, hp_pct: 2 } },
+            C9: { type: 'fixed', stats: { atk_pct: 2, def_pct: 2, hp_pct: 2 } },
+            C10: { type: 'fixed', stats: { atk_pct: 2, def_pct: 2, hp_pct: 2 } },
+            C11: { type: 'fixed', stats: { atk_pct: 2, def_pct: 2, hp_pct: 2 } },
+            C12: { type: 'fixed', stats: { atk_pct: 2, def_pct: 2, hp_pct: 2 } }
+        };
+
+        const EQUIP_CONFIG = [
+            { id: 'weapon1', label: 'อาวุธ 1', icon: 'ph-sword', color: 'red' }, { id: 'weapon2', label: 'อาวุธ 2', icon: 'ph-sword', color: 'red' },
+            { id: 'armor1', label: 'เสื้อเกราะ 1', icon: 'ph-shield', color: 'blue' }, { id: 'armor2', label: 'เสื้อเกราะ 2', icon: 'ph-shield', color: 'blue' },
+            { id: 'accessory1', label: 'แหวน', icon: 'ph-circle-dashed', color: 'purple' }
+        ];
+
+        let state = {};
+        let knightCollection = [];
+        let selectedKnightIndex = -1;
+        let currentMainCategory = 'ปรับแต่ง';
+        let currentSubCategory = 'ทั้งหมด';
+        let searchQuery = '';
+        let mainCategories = ['ปรับแต่ง', 'พิเศษ', 'อัศวินทั่วไป', 'ทวีปอาร์เด', 'ทวีปไอชา', 'อื่นๆ'];
+        const SET_BONUS_CONFIG = [
+            {
+                id: 'attack_set',
+                name: 'เซตโจมตี',
+                tiers: [
+                    { stats: [{ type: 'atk_pct', value: 20 }] },
+                    { stats: [{ type: 'atk_pct', value: 45 }, { type: 'effHit', value: 20 }] }
+                ]
+            },
+            {
+                id: 'weakpoint_set',
+                name: 'เซตจุดอ่อน',
+                tiers: [
+                    { stats: [{ type: 'weakPointAtk', value: 15 }] },
+                    { stats: [{ type: 'weakPointAtk', value: 35 }] }
+                ]
+            },
+            {
+                id: 'hp_set',
+                name: 'เซตเลือด',
+                tiers: [
+                    { stats: [{ type: 'hp_pct', value: 17 }] },
+                    { stats: [{ type: 'hp_pct', value: 40 }] }
+                ]
+            },
+            {
+                id: 'block_set',
+                name: 'เซตบล็อค',
+                tiers: [
+                    { stats: [{ type: 'blockRate', value: 15 }] },
+                    { stats: [{ type: 'blockRate', value: 30 }] }
+                ]
+            },
+            {
+                id: 'defense_set',
+                name: 'เซตป้องกัน',
+                tiers: [
+                    { stats: [{ type: 'def_pct', value: 20 }] },
+                    { stats: [{ type: 'def_pct', value: 45 }, { type: 'effRes', value: 20 }] }
+                ]
+            },
+            {
+                id: 'crit_set',
+                name: 'เซตคริ',
+                tiers: [
+                    { stats: [{ type: 'crit', value: 15 }] },
+                    { stats: [{ type: 'crit', value: 30 }] }
+                ]
+            },
+            {
+                id: 'boss_set',
+                name: 'เซตบอส',
+                tiers: [
+                    { stats: [] },
+                    { stats: [] }
+                ]
+            },
+            {
+                id: 'effhit_set',
+                name: 'เซตเข้าเป้า',
+                tiers: [
+                    { stats: [{ type: 'effHit', value: 17 }] },
+                    { stats: [{ type: 'effHit', value: 35 }] }
+                ]
+            },
+            {
+                id: 'effres_set',
+                name: 'เซตต้าน',
+                tiers: [
+                    { stats: [{ type: 'effRes', value: 17 }] },
+                    { stats: [{ type: 'effRes', value: 35 }] }
+                ]
+            }
+        ];
+
+        let subCategories = {
+            'ปรับแต่ง': ['ทั้งหมด'],
+            'พิเศษ': ['ทั้งหมด'],
+            'อัศวินทั่วไป': ['ทั้งหมด'],
+            'ทวีปอาร์เด': ['ทั้งหมด'],
+            'ทวีปไอชา': ['ทั้งหมด'],
+            'อื่นๆ': ['ทั้งหมด']
+        };
+
+        function getStatOptionsHTML(selectedType) {
+            return ALL_STATS.map(s => `<option value="${s.id}" ${selectedType === s.id ? 'selected' : ''}>${s.label}</option>`).join('');
+        }
+
+        function createStatInput(group, stat) {
+            let label = stat.label;
+            if (group === 'lb' && ['atk', 'def', 'hp'].includes(stat.id)) {
+                label = stat.label + ' %';
+            }
+            return `
+                                                    <div class="grid grid-cols-2 items-center gap-2">
+                                                        <label class="text-sm flex items-center gap-2 truncate"><i class="ph-fill ${stat.icon} text-slate-400"></i>${label}</label>
+                                                        <input type="number" value="${state[group][stat.id]}" oninput="updateStat('${group}', '${stat.id}', this.value)" class="w-full text-right p-1">
+                                                    </div>`;
+        }
+
+        function calculatePotentialValue(statId, level) {
+            level = parseInt(level) || 0;
+            let total = 0;
+            const config = {
+                atk: { t1: 10, t2: 12, t3: 15 },
+                def: { t1: 7, t2: 8, t3: 10 },
+                hp: { t1: 32, t2: 36, t3: 45 }
+            };
+            const c = config[statId];
+            if (!c) return 0;
+
+            for (let i = 1; i <= level; i++) {
+                if (i <= 10) total += c.t1;
+                else if (i <= 20) total += c.t2;
+                else if (i <= 30) total += c.t3;
+            }
+            return total;
+        }
+
+        function renderStatGroups() {
+            document.getElementById("base-stats-container").innerHTML = ALL_STATS.filter(s => !s.id.includes("_pct")).map(stat => createStatInput("base", stat)).join("");
+
+            // LB stats
+            document.getElementById("lb-stats-container").innerHTML =
+                Object.entries(state.lb).map(([statId, value]) => {
+                    const stat = ALL_STATS.find(s => s.id === statId);
+                    if (stat && value !== 0) {
+                        let label = stat.label;
+                        if (['atk_pct', 'def_pct', 'hp_pct'].includes(statId)) {
+                            label = stat.label.replace(' %', '') + ' %';
+                        }
+                        return `<div class="grid grid-cols-2 items-center gap-2">
+                                                    <label class="text-sm flex items-center gap-2 truncate"><i class="ph-fill ${stat.icon} text-slate-400"></i>${label}</label>
+                                                    <span class="text-right text-purple-300">${value}${stat.suffix || ''}</span>
+                                                </div>`;
+                    }
+                    return '';
+                }).join('');
+
+            // Potential stats (Level-based)
+            document.getElementById("potential-stats-container").innerHTML = ALL_STATS.filter(s => ["atk", "def", "hp"].includes(s.id)).map(stat => {
+                const currentLv = state.potentialLevels ? (state.potentialLevels[stat.id] || 0) : 0;
+                const calculatedVal = calculatePotentialValue(stat.id, currentLv);
+                return `
+                                    <div class="grid grid-cols-2 items-center gap-2 bg-slate-900/30 p-2 rounded border border-slate-700/30">
+                                        <div class="flex flex-col">
+                                            <label class="text-xs flex items-center gap-2 truncate text-slate-300"><i class="ph-fill ${stat.icon} text-pink-400"></i>${stat.label}</label>
+                                            <span class="text-[10px] text-pink-300/70 ml-6">+${calculatedVal.toLocaleString()}</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-[10px] text-slate-500">Lv.</span>
+                                            <select onchange="updatePotentialLevel('${stat.id}', this.value)" class="w-full text-right text-xs p-1">
+                                                ${Array.from({ length: 31 }, (_, i) => `<option value="${i}" ${currentLv == i ? 'selected' : ''}>${i}</option>`).join('')}
+                                            </select>
+                                        </div>
+                                    </div>`;
+            }).join("");
+        }
+
+        function updatePotentialLevel(statId, level) {
+            if (!state.potentialLevels) state.potentialLevels = {};
+            state.potentialLevels[statId] = parseInt(level);
+            state.potential[statId] = calculatePotentialValue(statId, level);
+            renderStatGroups();
+            calculateAndRender();
+        }
+
+        function renderEquipments() {
+            const container = document.getElementById('equipments-container');
+            container.innerHTML = state.equipments.map((eq, eqIndex) => {
+                const cardClass = eq.color === 'red' ? 'weapon-card' : (eq.color === 'blue' ? 'armor-card' : 'accessory-card');
+                const totalMultipliers = eq.subStats.reduce((sum, s) => sum + (s.multiplier || 0), 0);
+                const remainingMultipliers = 5 - totalMultipliers;
+
+                const createStatRow = (type, stat, index) => {
+                    let multiplierHTML = '';
+                    if (type === 'subStats') {
+                        multiplierHTML = `
+                                                                <div class="flex items-center gap-1 ml-1">
+                                                                    <button onclick="updateMultiplier(${eqIndex}, ${index}, -1)" class="multiplier-btn inactive" ${stat.multiplier <= 0 ? 'disabled' : ''}>-</button>
+                                                                    <span class="text-[10px] font-bold text-amber-400 w-3 text-center">${stat.multiplier || 0}</span>
+                                                                    <button onclick="updateMultiplier(${eqIndex}, ${index}, 1)" class="multiplier-btn ${stat.multiplier > 0 ? 'active' : 'inactive'}" ${remainingMultipliers <= 0 ? 'disabled' : ''}>+</button>
+                                                                </div>
+                                                            `;
+                    }
+                    return `
+                                                            <div class="flex items-center gap-1 bg-slate-900/50 p-1.5 rounded border border-slate-700/50">
+                                                                <select class="flex-1 text-[10px] p-1" onchange="updateEquipStat(${eqIndex}, '${type}', ${index}, 'type', this.value)">${getStatOptionsHTML(stat.type)}</select>
+                                                                <input type="number" class="w-14 text-[10px] p-1 text-center" value="${stat.value}" onchange="updateEquipStat(${eqIndex}, '${type}', ${index}, 'value', this.value)">
+                                                                ${multiplierHTML}
+                                                                <button onclick="removeEquipStat(${eqIndex}, '${type}', ${index})" class="text-red-500 p-1"><i class="ph-fill ph-trash text-xs"></i></button>
+                                                            </div>`;
+                };
+
+                return `
+                                                        <div class="stat-card ${cardClass}">
+                                                            <div class="flex justify-between items-center mb-3">
+                                                                <h4 class="font-bold flex items-center gap-2"><i class="ph-fill ${eq.icon}"></i>${eq.label}</h4>
+                                                                <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-400">
+                                                                    Multiplier: <span class="${remainingMultipliers === 0 ? 'text-red-400' : 'text-amber-400'}">${totalMultipliers}/5</span>
+                                                                </span>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <div class="flex justify-between items-center mb-2"><label class="text-[10px] font-medium text-slate-400 uppercase">Main Stats</label><button onclick="addEquipStat(${eqIndex}, 'mainStats')" class="btn-secondary btn-sm !p-1"><i class="ph-fill ph-plus text-xs"></i></button></div>
+                                                                <div class="space-y-1">${eq.mainStats.map((s, i) => createStatRow('mainStats', s, i)).join('') || '<p class="text-[10px] text-slate-600 italic text-center py-1">ไม่มี Main Stat</p>'}</div>
+                                                            </div>
+                                                            <div>
+                                                                <div class="flex justify-between items-center mb-2"><label class="text-[10px] font-medium text-slate-400 uppercase">Sub Stats</label><button onclick="addEquipStat(${eqIndex}, 'subStats')" class="btn-secondary btn-sm !p-1"><i class="ph-fill ph-plus text-xs"></i></button></div>
+                                                                <div class="space-y-1">${eq.subStats.map((s, i) => createStatRow('subStats', s, i)).join('') || '<p class="text-[10px] text-slate-600 italic text-center py-1">ไม่มี Sub Stat</p>'}</div>
+                                                            </div>
+                                                        </div>`;
+            }).join('');
+        }
+
+        function updateSet(setId) {
+            state.selectedSet = setId;
+            state.selectedTier = setId ? 2 : 0; // Auto-select Tier 2 if a set is selected, otherwise 0
+            renderSets();
+            calculateAndRender();
+        }
+
+        function updateSetTier(tier) {
+            state.selectedTier = parseInt(tier) || 0;
+            renderSets();
+            calculateAndRender();
+        }
+
+        function resetSetBonus() {
+            state.selectedSet = null;
+            state.selectedTier = 0;
+            renderSets();
+            calculateAndRender();
+        }
+
+        function renderSets() {
+            const container = document.getElementById('sets-container');
+            let html = `
+                        <div class="stat-card">
+                            <div class="flex justify-between items-center mb-3">
+                                <h4 class="font-bold flex items-center gap-2 text-amber-400"><i class="ph-fill ph-polygon"></i>เลือกเซตโบนัส</h4>
+                                <button onclick="resetSetBonus()" class="btn-secondary btn-sm"><i class="ph-bold ph-arrow-counter-clockwise"></i>รีเซ็ต</button>
+                            </div>
+                            <div class="mb-3">
+                                <select onchange="updateSet(this.value)" class="w-full text-xs p-1">
+                                    <option value="">-- ไม่เลือกเซต --</option>
+                                    ${SET_BONUS_CONFIG.map(set => `<option value="${set.id}" ${state.selectedSet === set.id ? 'selected' : ''}>${set.name}</option>`).join('')}
+                                </select>
+                            </div>
+                    `;
+
+            if (state.selectedSet) {
+                const selectedSet = SET_BONUS_CONFIG.find(s => s.id === state.selectedSet);
+                if (selectedSet) {
+                    html += `
+                                <div class="space-y-2 mb-3">
+                                    <h4 class="font-bold flex items-center gap-2 text-amber-400/80"><i class="ph-fill ph-star"></i>เลือกขั้น</h4>
+                                    <select onchange="updateSetTier(this.value)" class="w-full text-xs p-1">
+                                        <option value="0">-- ไม่เลือกขั้น --</option>
+                                        <option value="1" ${state.selectedTier === 1 ? 'selected' : ''}>ขั้น 1</option>
+                                        <option value="2" ${state.selectedTier === 2 ? 'selected' : ''}>ขั้น 2</option>
+                                    </select>
+                                </div>
+                            `;
+
+                    if (state.selectedTier > 0) {
+                        const tierStats = selectedSet.tiers[state.selectedTier - 1];
+                        if (tierStats && tierStats.stats.length > 0) {
+                            html += `<div class="space-y-2 mt-4 border-t border-slate-700/50 pt-4">
+                                        <h5 class="text-sm font-bold text-amber-400">โบนัสที่ได้รับ:</h5>`;
+                            tierStats.stats.forEach(s => {
+                                const statInfo = ALL_STATS.find(allStat => allStat.id === s.type);
+                                if (statInfo) {
+                                    html += `
+                                                <div class="flex items-center gap-2">
+                                                    <i class="ph-fill ${statInfo.icon} text-slate-500"></i>
+                                                    <span>${statInfo.label}: +${s.value}${statInfo.suffix || ''}</span>
+                                                </div>
+                                            `;
+                                }
+                            });
+                            html += `</div>`;
+                        } else {
+                            html += `<p class="text-sm text-slate-500 text-center py-2">ไม่มีโบนัสสำหรับขั้นนี้</p>`;
+                        }
+                    }
+                }
+            }
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        function renderLbSelections() {
+            const selectedLbLevel = document.getElementById("inp-lbLevel").value;
+            const container = document.getElementById("lb-selections-container");
+            container.innerHTML = '';
+
+            if (selectedLbLevel === 'none') return;
+
+            const levels = Object.keys(LB_STATS_CONFIG);
+            const currentIndex = levels.indexOf(selectedLbLevel);
+
+            for (let i = 0; i <= currentIndex; i++) {
+                const levelKey = levels[i];
+                const config = LB_STATS_CONFIG[levelKey];
+
+                if (config.type === 'choice') {
+                    const div = document.createElement('div');
+                    div.className = 'info-group';
+                    div.innerHTML = `<label class="text-xs text-purple-400">${config.label}</label>
+                                                     <select class="w-full text-xs" onchange="updateLbChoice('${levelKey}', this.value)">
+                                                        <option value="">-- เลือกค่าสถานะ --</option>
+                                                        ${Object.keys(config.options).map(statId => {
+                        const stat = ALL_STATS.find(s => s.id === statId);
+                        const isSelected = state.lbChoices && state.lbChoices[levelKey] === statId;
+                        return `<option value="${statId}" ${isSelected ? 'selected' : ''}>${stat.label} +${config.options[statId]}${stat.suffix || ''}</option>`;
+                    }).join('')}
+                                                     </select>`;
+                    container.appendChild(div);
+                }
+            }
+        }
+
+        function updateLbChoice(levelKey, statId) {
+            if (!state.lbChoices) state.lbChoices = {};
+            state.lbChoices[levelKey] = statId;
+
+            // Apply auto-selection for C2, C5, C6 if C1 is atk_pct or def_pct
+            if (levelKey === 'C1' && (statId === 'atk_pct' || statId === 'def_pct')) {
+                state.lbChoices['C2'] = statId;
+                state.lbChoices['C5'] = statId;
+                state.lbChoices['C6'] = statId;
+            }
+            applyLbStats();
+        }
+
+        function applyLbStats() {
+            const selectedLbLevel = document.getElementById("inp-lbLevel").value;
+            // Reset all LB stats first
+            ALL_STATS.forEach(s => { state.lb[s.id] = 0; });
+
+            if (selectedLbLevel !== 'none') {
+                const levels = Object.keys(LB_STATS_CONFIG);
+                const currentIndex = levels.indexOf(selectedLbLevel);
+
+                // Cumulative calculation
+                for (let i = 0; i <= currentIndex; i++) {
+                    const levelKey = levels[i];
+                    const config = LB_STATS_CONFIG[levelKey];
+
+                    if (config.type === 'fixed') {
+                        for (const statId in config.stats) {
+                            state.lb[statId] = (state.lb[statId] || 0) + config.stats[statId];
+                        }
+                    } else if (config.type === 'choice') {
+                        const chosenStatId = state.lbChoices ? state.lbChoices[levelKey] : null;
+                        if (chosenStatId && config.options[chosenStatId] !== undefined) {
+                            state.lb[chosenStatId] = (state.lb[chosenStatId] || 0) + config.options[chosenStatId];
+                        }
+                    }
+                }
+            }
+            renderLbSelections();
+            renderStatGroups();
+            calculateAndRender();
+        }
+
+        function applyClassBaseStats() {
+            const selectedClass = document.getElementById('inp-classType').value;
+            if (selectedClass === 'none') {
+                ALL_STATS.forEach(s => { state.base[s.id] = 0; });
+            } else {
+                const classStats = CLASS_BASE_STATS[selectedClass];
+                ALL_STATS.forEach(s => {
+                    if (classStats[s.id] !== undefined) {
+                        state.base[s.id] = classStats[s.id];
+                    } else {
+                        state.base[s.id] = 0; // Set to 0 if not defined for the class
+                    }
+                });
+            }
+            renderStatGroups();
+            calculateAndRender();
+        }
+
+        function calculateAndRender() {
+            // Character Info
+            document.getElementById("prev-image").src = document.getElementById("inp-image").value || "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
+
+            // LB Display
+            const lbLevel = document.getElementById("inp-lbLevel").value;
+            document.getElementById("prev-lb-display").innerText = lbLevel === "none" ? "-" : `C${lbLevel}`;
+
+            if (state.selectedSet && state.selectedTier > 0) {
+                const selectedSet = SET_BONUS_CONFIG.find(s => s.id === state.selectedSet);
+                if (selectedSet) {
+                    document.getElementById("prev-active-sets-display").innerText = selectedSet.name;
+                }
+            } else {
+                document.getElementById("prev-active-sets-display").innerText = "-";
+            }
+
+            // Potential Stats Preview
+            const potentialPreviewHTML = `
+                        <div class="potential-item">
+                            <div class="potential-item-label"><i class="ph-fill ph-sword"></i>พลังโจมตี</div>
+                            <span>LV.${state.potentialLevels.atk || 0}</span>
+                        </div>
+                        <div class="potential-item">
+                            <div class="potential-item-label"><i class="ph-fill ph-shield"></i>พลังป้องกัน</div>
+                            <span>LV.${state.potentialLevels.def || 0}</span>
+                        </div>
+                        <div class="potential-item">
+                            <div class="potential-item-label"><i class="ph-fill ph-heart"></i>พลังชีวิต</div>
+                            <span>LV.${state.potentialLevels.hp || 0}</span>
+                        </div>
+                    `;
+            document.getElementById("potential-preview-grid").innerHTML = potentialPreviewHTML;
+
+            // Equipment Display with Multiplier for Sub Stats
+            const equipmentCards = state.equipments.map((eq) => {
+                const cardClass = eq.color === "red" ? "weapon-card" : (eq.color === "blue" ? "armor-card" : "accessory-card");
+                let statsHTML = '';
+
+                // Main Stats
+                eq.mainStats.forEach(s => {
+                    const statInfo = ALL_STATS.find(as => as.id === s.type);
+                    if (statInfo) {
+                        statsHTML += `<div class="equipment-stat-item main-stat"><i class="ph-fill ${statInfo.icon}"></i>${statInfo.label}+${s.value}${statInfo.suffix || ''}</div>`;
+                    }
+                });
+
+                // Sub Stats
+                eq.subStats.forEach(s => {
+                    const statInfo = ALL_STATS.find(as => as.id === s.type);
+                    if (statInfo) {
+                        // Correct multiplier display logic: Base * (1 + Multiplier)
+                        const multiplier = s.multiplier || 0;
+                        const multipliedValue = Math.floor(s.value * (1 + multiplier));
+                        statsHTML += `<div class="equipment-stat-item sub-stat"><i class="ph-fill ${statInfo.icon}"></i>${statInfo.label}+${multipliedValue}${statInfo.suffix || ''}</div>`;
+                    }
+                });
+
+                return `
+                            <div class="equipment-card ${cardClass}">
+                                <div class="equipment-card-header">
+                                    <div class="equipment-icon-main"><i class="ph-fill ${eq.icon}"></i></div>
+                                    ${eq.label}
+                                </div>
+                                <div class="equipment-stats-list">
+                                    ${statsHTML || '<div class="text-slate-500 text-xs italic text-center">ไม่มีสถานะ</div>'}
+                                </div>
+                            </div>
+                        `;
+            });
+
+            document.getElementById("prev-weapons-armors-display").innerHTML = equipmentCards.join('');
+
+            const totals = {};
+            ALL_STATS.forEach(s => totals[s.id] = 0);
+
+            // LB calculations
+            for (const statId in state.lb) {
+                if (state.lb.hasOwnProperty(statId) && state.lb[statId] !== 0) {
+                    // Check if it's a percentage stat for atk, def, hp
+                    if (['atk_pct', 'def_pct', 'hp_pct'].includes(statId)) {
+                        totals[statId] += state.lb[statId];
+                    } else {
+                        totals[statId] += state.lb[statId];
+                    }
+                }
+            }
+
+            // Potential calculations (Flat: atk, def, hp)
+            ['atk', 'def', 'hp'].forEach(id => totals[id] += state.potential[id]);
+
+            // Equipment calculations
+            state.equipments.forEach(eq => {
+                eq.mainStats.forEach(s => { if (s.type) totals[s.type] += s.value; });
+                eq.subStats.forEach(s => {
+                    if (s.type) {
+                        const multiplier = s.multiplier || 0;
+                        totals[s.type] += s.value * (1 + multiplier);
+                    }
+                });
+            });
+
+            // Set calculations
+            if (state.selectedSet && state.selectedTier > 0) {
+                const selectedSet = SET_BONUS_CONFIG.find(s => s.id === state.selectedSet);
+                if (selectedSet) {
+                    const tierStats = selectedSet.tiers[state.selectedTier - 1];
+                    if (tierStats) {
+                        tierStats.stats.forEach(s => {
+                            if (s.type) totals[s.type] += s.value;
+                        });
+                    }
+                }
+            }
+
+
+            // Final Stats Rendering
+            document.getElementById('final-stats-container').innerHTML = ALL_STATS.filter(s => !s.id.includes('_pct')).map(stat => {
+                const base = state.base[stat.id] || 0;
+                let finalVal, bonusText = '';
+
+                if (['atk', 'def', 'hp'].includes(stat.id)) {
+                    const pct_total = totals[`${stat.id}_pct`] || 0;
+                    const flat_total = totals[stat.id] || 0;
+                    finalVal = (base * (1 + (pct_total / 100))) + flat_total;
+                    let bonusTexts = [];
+                    if (pct_total !== 0) bonusTexts.push(`${pct_total > 0 ? '+' : ''}${pct_total.toFixed(1)}%`);
+                    if (flat_total !== 0) bonusTexts.push(`${flat_total > 0 ? '+' : ''}${flat_total.toLocaleString()}`);
+                    if (bonusTexts.length > 0) bonusText = bonusTexts.join(' , ');
+                } else {
+                    finalVal = base + totals[stat.id];
+                    if (totals[stat.id] > 0) bonusText = `+${totals[stat.id].toFixed(1)}${stat.suffix || ''}`;
+                }
+
+                const displayVal = (stat.suffix) ? finalVal.toFixed(1) + stat.suffix : Math.floor(finalVal).toLocaleString();
+                const label = stat.id === 'atk' ? `พลังโจมตี (${document.getElementById('inp-atkType').value})` : stat.label;
+
+                return `<div class="flex items-center justify-between py-2 border-b border-slate-700/50 last:border-0">
+                                                        <div class="flex items-center gap-2"><i class="ph-fill ${stat.icon} text-slate-500"></i><span class="text-sm">${label}</span></div>
+                                                        <div class="flex items-center gap-3">
+                                                            ${bonusText ? `<span class="stat-bonus text-xs">${bonusText}</span>` : ''}
+                                                            <span class="stat-value text-base">${displayVal}</span>
+                                                        </div>
+                                                    </div>`;
+            }).join('');
+        }
+
+        function updateStat(group, id, val) { state[group][id] = Number(val) || 0; calculateAndRender(); }
+        function resetGroup(group) {
+            if (group === 'base') {
+                document.getElementById('inp-classType').value = 'none';
+                applyClassBaseStats();
+            } else if (group === 'lb') {
+                document.getElementById('inp-lbLevel').value = 'none';
+                state.lbChoices = {};
+                applyLbStats();
+            } else if (group === 'potential') {
+                state.potentialLevels = {};
+                ALL_STATS.forEach(s => { state.potential[s.id] = 0; });
+                renderStatGroups();
+                calculateAndRender();
+            } else {
+                ALL_STATS.forEach(s => state[group][s.id] = 0);
+                renderStatGroups();
+                calculateAndRender();
+            }
+        }
+        function addEquipStat(eqIndex, type) {
+            const eq = state.equipments[eqIndex];
+            const isSub = type === 'subStats';
+            const isMain = type === 'mainStats';
+
+            if (isSub && eq.subStats.length >= 5) return;
+
+            // Custom logic for first-time Main Stats addition
+            if (isMain && eq.mainStats.length === 0) {
+                if (eq.color === 'red') { // Weapon
+                    eq.mainStats.push({ type: 'atk', value: ALL_STATS.find(s => s.id === 'atk').mainDefault, multiplier: 0 });
+                    eq.mainStats.push({ type: 'atk_pct', value: ALL_STATS.find(s => s.id === 'atk_pct').mainDefault, multiplier: 0 });
+                } else if (eq.color === 'blue') { // Armor
+                    eq.mainStats.push({ type: 'def', value: ALL_STATS.find(s => s.id === 'def').mainDefault, multiplier: 0 });
+                    eq.mainStats.push({ type: 'hp', value: ALL_STATS.find(s => s.id === 'hp').mainDefault, multiplier: 0 });
+                    eq.mainStats.push({ type: 'atk_pct', value: ALL_STATS.find(s => s.id === 'atk_pct').mainDefault, multiplier: 0 });
+                } else if (eq.color === 'purple') { // Accessory
+                    eq.mainStats.push({ type: 'def_pct', value: 10, multiplier: 0 });
+                    eq.mainStats.push({ type: 'hp_pct', value: 10, multiplier: 0 });
+                    eq.mainStats.push({ type: 'atk_pct', value: 10, multiplier: 0 });
+                } else {
+                    const defStat = ALL_STATS[0].id;
+                    const newVal = ALL_STATS[0].mainDefault;
+                    eq.mainStats.push({ type: defStat, value: newVal, multiplier: 0 });
+                }
+            } else {
+                // Default behavior for subStats or subsequent mainStats
+                const defStat = ALL_STATS[0].id;
+                const newVal = isSub ? ALL_STATS[0].subDefault : ALL_STATS[0].mainDefault;
+                state.equipments[eqIndex][type].push({ type: defStat, value: newVal, multiplier: 0 });
+            }
+
+            renderEquipments();
+            calculateAndRender();
+        }
+        function removeEquipStat(eqIndex, type, statIndex) { state.equipments[eqIndex][type].splice(statIndex, 1); renderEquipments(); calculateAndRender(); }
+        function updateEquipStat(eqIndex, type, statIndex, field, value) {
+            const eq = state.equipments[eqIndex];
+            if (field === 'type') {
+                const statInfo = ALL_STATS.find(s => s.id === value);
+                eq[type][statIndex].value = type === 'subStats' ? statInfo.subDefault : statInfo.mainDefault;
+            }
+            eq[type][statIndex][field] = field === 'type' ? value : Number(value) || 0;
+            renderEquipments();
+            calculateAndRender();
+        }
+        function updateMultiplier(eqIndex, statIndex, delta) {
+            const eq = state.equipments[eqIndex];
+            const currentTotal = eq.subStats.reduce((sum, s) => sum + (s.multiplier || 0), 0);
+            const stat = eq.subStats[statIndex];
+            if (delta > 0 && currentTotal >= 5) return;
+            if (delta < 0 && stat.multiplier <= 0) return;
+            stat.multiplier = (stat.multiplier || 0) + delta;
+            renderEquipments();
+            calculateAndRender();
+        }
+        function resetEquipments() { state.equipments = EQUIP_CONFIG.map(eq => ({ ...eq, mainStats: [], subStats: [] })); renderEquipments(); calculateAndRender(); }
+
+
+        function renderCollectionList() {
+            const container = document.getElementById('knight-list');
+            const listContainer = document.getElementById('knight-list-container');
+
+            // Remove any existing headers or dividers
+            const existingHeaders = listContainer.querySelectorAll('.category-divider, .category-header-bar');
+            existingHeaders.forEach(h => h.remove());
+
+            container.innerHTML = '';
+
+            if (currentSubCategory === 'ทั้งหมด') {
+                const subs = subCategories[currentMainCategory] || ['ทั้งหมด'];
+                let hasAnyKnight = false;
+
+                subs.forEach(sub => {
+                    if (sub === 'ทั้งหมด') return; // Skip "All" subcategory itself
+
+                    const knightsInSub = knightCollection.filter(knight => {
+                        const matchesMain = knight.mainCategory === currentMainCategory;
+                        const matchesSub = knight.subCategory === sub;
+                        const matchesSearch = knight.name.toLowerCase().includes(searchQuery.toLowerCase());
+                        return matchesMain && matchesSub && matchesSearch;
+                    });
+
+                    if (knightsInSub.length > 0) {
+                        hasAnyKnight = true;
+
+                        // Create Divider and Header
+                        const divider = document.createElement('div');
+                        divider.className = 'category-divider';
+                        divider.innerHTML = `<div class="category-header-bar">${sub}</div>`;
+                        container.appendChild(divider);
+
+                        // Create Grid for this subcategory
+                        const grid = document.createElement('div');
+                        grid.className = 'flex flex-wrap gap-4 justify-start mb-2';
+
+                        grid.innerHTML = knightsInSub.map((knight, index) => {
+                            const displayIndex = knightCollection.indexOf(knight);
+                            const isActive = displayIndex === selectedKnightIndex ? 'ring-4 ring-amber-500 scale-105' : '';
+                            return `
+                                                    <div class="hero-grid-card group ${isActive}" onclick="loadKnight(${displayIndex})" title="${knight.name} (คลิกเพื่อโหลด)">
+
+                                                        <img src="${knight.image}" alt="${knight.name}" onerror="this.src='https://via.placeholder.com/100x140?text=No+Image'">
+                                                        <div class="hero-name-tag">${knight.name}</div>
+                                                        <div class="absolute top-1 right-1 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <button onclick="event.stopPropagation(); deleteKnight(${displayIndex})" class="bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-700" title="ลบ">
+                                                                <i class="ph-bold ph-trash text-[10px]"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div class="absolute top-1 left-1 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <button onclick="event.stopPropagation(); moveKnight(${displayIndex}, -1)" class="bg-amber-500 text-black rounded-full w-5 h-5 flex items-center justify-center hover:bg-amber-600" title="ย้ายไปก่อนหน้า" ${index === 0 ? 'style="display:none"' : ''}>
+                                                                <i class="ph-bold ph-caret-left text-[10px]"></i>
+                                                            </button>
+                                                            <button onclick="event.stopPropagation(); moveKnight(${displayIndex}, 1)" class="bg-amber-500 text-black rounded-full w-5 h-5 flex items-center justify-center hover:bg-amber-600" title="ย้ายไปถัดไป" ${index === knightsInSub.length - 1 ? 'style="display:none"' : ''}>
+                                                                <i class="ph-bold ph-caret-right text-[10px]"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                `;
+                        }).join('');
+                        container.appendChild(grid);
+                    }
+                });
+
+                if (!hasAnyKnight) {
+                    container.innerHTML = '<p class="text-slate-500 text-center w-full py-10">ไม่พบอัศวินในหมวดหมู่นี้</p>';
+                }
+            } else {
+                // Original behavior for specific subcategories
+                const filteredKnights = knightCollection.filter(knight => {
+                    const matchesMain = knight.mainCategory === currentMainCategory;
+                    const matchesSub = knight.subCategory === currentSubCategory;
+                    const matchesSearch = knight.name.toLowerCase().includes(searchQuery.toLowerCase());
+                    return matchesMain && matchesSub && matchesSearch;
+                });
+
+                const divider = document.createElement('div');
+                divider.className = 'category-divider';
+                divider.innerHTML = `<div class="category-header-bar">${currentSubCategory}</div>`;
+                container.appendChild(divider);
+
+                if (filteredKnights.length === 0) {
+                    container.innerHTML += '<p class="text-slate-500 text-center w-full py-10">ไม่พบอัศวินในหมวดหมู่นี้</p>';
+                    return;
+                }
+
+                const grid = document.createElement('div');
+                grid.className = 'flex flex-wrap gap-4 justify-start';
+                grid.innerHTML = filteredKnights.map((knight, index) => {
+                    const displayIndex = knightCollection.indexOf(knight);
+                    const isActive = displayIndex === selectedKnightIndex ? 'ring-4 ring-amber-500 scale-105' : '';
+                    return `
+                                            <div class="hero-grid-card group ${isActive}" onclick="loadKnight(${displayIndex})" title="${knight.name} (คลิกเพื่อโหลด)">
+
+                                                <img src="${knight.image}" alt="${knight.name}" onerror="this.src='https://via.placeholder.com/100x140?text=No+Image'">
+                                                <div class="hero-name-tag">${knight.name}</div>
+                                                <div class="absolute top-1 right-1 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <button onclick="event.stopPropagation(); deleteKnight(${displayIndex})" class="bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-700" title="ลบ">
+                                                        <i class="ph-bold ph-trash text-[10px]"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="absolute top-1 left-1 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <button onclick="event.stopPropagation(); moveKnight(${displayIndex}, -1)" class="bg-amber-500 text-black rounded-full w-5 h-5 flex items-center justify-center hover:bg-amber-600" title="ย้ายไปก่อนหน้า" ${index === 0 ? 'style="display:none"' : ''}>
+                                                        <i class="ph-bold ph-caret-left text-[10px]"></i>
+                                                    </button>
+                                                    <button onclick="event.stopPropagation(); moveKnight(${displayIndex}, 1)" class="bg-amber-500 text-black rounded-full w-5 h-5 flex items-center justify-center hover:bg-amber-600" title="ย้ายไปถัดไป" ${index === filteredKnights.length - 1 ? 'style="display:none"' : ''}>
+                                                        <i class="ph-bold ph-caret-right text-[10px]"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        `;
+                }).join('');
+                container.appendChild(grid);
+            }
+        }
+
+        function renderMainCategoryTabs() {
+            const container = document.getElementById('main-category-tabs');
+            if (!container) return;
+            container.innerHTML = mainCategories.map(cat => {
+                const isActive = cat === currentMainCategory ? 'active' : '';
+                return `<button onclick="selectMainCategory('${cat}')" class="top-nav-btn ${isActive}">${cat}</button>`;
+            }).join('');
+        }
+
+        function renderSubCategoryTabs() {
+            const container = document.getElementById('collection-tabs');
+            const subs = subCategories[currentMainCategory] || ['ทั้งหมด'];
+            container.innerHTML = subs.map((cat, idx) => {
+                const isActive = cat === currentSubCategory ? 'active' : '';
+                const isSpecial = cat === 'ทั้งหมด';
+                return `
+                                            <div class="relative group">
+                                                <button onclick="selectSubCategory('${cat}')" class="sidebar-tab ${isActive}">
+                                                    ${cat}
+                                                </button>
+                                                <div class="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    ${!isSpecial ? `
+                                                        <button onclick="moveSubCategory('${cat}', -1)" class="text-amber-400 p-0.5 hover:text-white" title="ย้ายขึ้น" ${idx <= 1 ? 'style="display:none"' : ''}>
+                                                            <i class="ph-bold ph-caret-up"></i>
+                                                        </button>
+                                                        <button onclick="moveSubCategory('${cat}', 1)" class="text-amber-400 p-0.5 hover:text-white" title="ย้ายลง" ${idx === subs.length - 1 ? 'style="display:none"' : ''}>
+                                                            <i class="ph-bold ph-caret-down"></i>
+                                                        </button>
+                                                        <button onclick="deleteSubCategory('${cat}')" class="text-red-400 p-0.5 hover:text-red-600" title="ลบ">
+                                                            <i class="ph-fill ph-trash"></i>
+                                                        </button>
+                                                    ` : ''}
+                                                </div>
+                                            </div>
+                                        `;
+            }).join('');
+        }
+
+        function selectMainCategory(cat) {
+            currentMainCategory = cat;
+            currentSubCategory = 'ทั้งหมด';
+            renderMainCategoryTabs();
+            renderSubCategoryTabs();
+            renderCollectionList();
+            saveCollection();
+        }
+
+        function selectSubCategory(cat) {
+            currentSubCategory = cat;
+            renderSubCategoryTabs();
+            renderCollectionList();
+        }
+
+        function addCategory() {
+            const newCategory = prompt(`ชื่อหมวดหมู่ย่อยใหม่สำหรับ '${currentMainCategory}':`);
+            if (newCategory && !subCategories[currentMainCategory].includes(newCategory)) {
+                subCategories[currentMainCategory].push(newCategory);
+                renderSubCategoryTabs();
+                saveCollection();
+            }
+        }
+
+        function deleteSubCategory(cat) {
+            if (cat === 'ทั้งหมด') {
+                alert('ไม่สามารถลบหมวดหมู่ ทั้งหมด ได้');
+                return;
+            }
+            if (confirm(`คุณแน่ใจหรือไม่ที่จะลบหมวดหมู่ย่อย '${cat}'? อัศวินทั้งหมดในหมวดหมู่นี้จะถูกย้ายไปที่ 'ทั้งหมด'`)) {
+                subCategories[currentMainCategory] = subCategories[currentMainCategory].filter(c => c !== cat);
+                knightCollection.forEach(knight => {
+                    if (knight.mainCategory === currentMainCategory && knight.subCategory === cat) {
+                        knight.subCategory = 'ทั้งหมด';
+                    }
+                });
+                currentSubCategory = 'ทั้งหมด';
+                renderSubCategoryTabs();
+                renderCollectionList();
+                saveCollection();
+            }
+        }
+
+        function moveSubCategory(cat, direction) {
+            const subs = subCategories[currentMainCategory];
+            const index = subs.indexOf(cat);
+            if (index === -1) return;
+
+            const newIndex = index + direction;
+            if (newIndex < 0 || newIndex >= subs.length) return;
+
+            // Swap elements
+            [subs[index], subs[newIndex]] = [subs[newIndex], subs[index]];
+
+            renderSubCategoryTabs();
+            saveCollection();
+        }
+
+        function searchKnights(query) {
+            searchQuery = query;
+            renderCollectionList();
+        }
+
+        function clearSearch() {
+            document.getElementById('collection-search').value = '';
+            searchQuery = '';
+            renderCollectionList();
+        }
+
+        function confirmAddKnight() {
+            const knightName = document.getElementById('inp-name').value;
+            if (!knightName) {
+                alert('กรุณาใส่ชื่อตัวละครก่อนบันทึก');
+                return;
+            }
+
+            // Show category selection modal
+            openCategorySelectionModal();
+        }
+
+        function openCategorySelectionModal() {
+            const modal = document.getElementById('category-selection-modal');
+            const categoryList = document.getElementById('category-selection-list');
+
+            let html = '';
+            mainCategories.forEach(main => {
+                html += `<div class="mb-4">
+                                            <h4 class="text-amber-500 font-bold mb-2 border-b border-amber-500/30 pb-1">${main}</h4>
+                                            <div class="grid grid-cols-2 gap-2">`;
+                subCategories[main].forEach(sub => {
+                    html += `<button onclick="selectCategoryAndAdd('${main}', '${sub}')" class="text-left p-2 text-sm rounded border border-slate-700 hover:bg-amber-700/30 hover:border-amber-500 transition-all text-white">
+                                                ${sub}
+                                            </button>`;
+                });
+                html += `</div></div>`;
+            });
+
+            categoryList.innerHTML = html;
+            modal.classList.remove('hidden');
+        }
+
+        function closeCategorySelectionModal() {
+            document.getElementById('category-selection-modal').classList.add('hidden');
+        }
+
+        function selectCategoryAndAdd(main, sub) {
+            addKnightToCollection(main, sub);
+            closeCategorySelectionModal();
+        }
+
+        function addKnightToCollection(main, sub) {
+            const newKnight = {
+                name: document.getElementById('inp-name').value,
+                atkType: document.getElementById('inp-atkType').value,
+                classType: document.getElementById('inp-classType').value,
+                image: document.getElementById('inp-image').value,
+                lbLevel: document.getElementById('inp-lbLevel').value,
+                lbChoices: JSON.parse(JSON.stringify(state.lbChoices || {})),
+                potentialLevels: JSON.parse(JSON.stringify(state.potentialLevels || {})),
+                selectedSet: state.selectedSet,
+                selectedTier: state.selectedTier,
+                state: JSON.parse(JSON.stringify(state)),
+                mainCategory: main,
+                subCategory: sub || 'ทั้งหมด'
+            };
+            knightCollection.push(newKnight);
+            saveCollection();
+            renderCollectionList();
+            alert(`บันทึก '${newKnight.name}' ลงในสมุดเรียบร้อยแล้ว!`);
+        }
+
+        function loadKnight(index) {
+            const knight = knightCollection[index];
+            if (knight) {
+                document.getElementById('inp-name').value = knight.name;
+                document.getElementById('inp-atkType').value = knight.atkType;
+                document.getElementById('inp-classType').value = knight.classType || 'none'; // Load class type
+                document.getElementById('inp-image').value = knight.image;
+                document.getElementById('inp-lbLevel').value = knight.lbLevel || 'none'; // Load LB level
+                // Temporarily store custom base stats if they exist in the saved knight state
+                const customBaseStats = knight.state && knight.state.base ? JSON.parse(JSON.stringify(knight.state.base)) : {};
+
+                // Apply class base stats first
+                applyClassBaseStats();
+
+                // Then load the rest of the state, and apply custom base stats if they were present
+                state = JSON.parse(JSON.stringify(knight.state));
+                state.lbChoices = JSON.parse(JSON.stringify(knight.lbChoices || {})); // Load LB choices
+                state.potentialLevels = JSON.parse(JSON.stringify(knight.potentialLevels || {})); // Load Potential levels
+                state.selectedSet = knight.selectedSet || null;
+                state.selectedTier = knight.selectedTier || 0;
+
+                // Override class base stats with custom base stats if they were saved
+                if (Object.keys(customBaseStats).length > 0) {
+                    ALL_STATS.forEach(s => {
+                        if (customBaseStats[s.id] !== undefined) {
+                            state.base[s.id] = customBaseStats[s.id];
+                        }
+                    });
+                }
+
+                applyLbStats(); // Apply LB stats after loading state
+                renderStatGroups();
+                renderEquipments();
+                renderSets();
+                calculateAndRender();
+                selectedKnightIndex = index;
+                renderCollectionList();
+                closeCollectionModal();
+                alert(`โหลด '${knight.name}' สำเร็จ!`);
+            }
+        }
+
+        function deleteKnight(index) {
+            if (confirm(`คุณแน่ใจหรือไม่ที่จะลบ '${knightCollection[index].name}' ออกจากสมุด?`)) {
+                knightCollection.splice(index, 1);
+                selectedKnightIndex = -1;
+                saveCollection();
+                renderCollectionList();
+            }
+        }
+
+        function moveKnight(index, direction) {
+            const knight = knightCollection[index];
+            if (!knight) return;
+
+            // Find the next/previous knight in the SAME category
+            const currentCategoryKnights = knightCollection.filter(k =>
+                k.mainCategory === knight.mainCategory &&
+                k.subCategory === knight.subCategory
+            );
+
+            const internalIndex = currentCategoryKnights.indexOf(knight);
+            const targetInternalIndex = internalIndex + direction;
+
+            if (targetInternalIndex < 0 || targetInternalIndex >= currentCategoryKnights.length) return;
+
+            const targetKnight = currentCategoryKnights[targetInternalIndex];
+            const targetGlobalIndex = knightCollection.indexOf(targetKnight);
+
+            // Swap in global collection
+            [knightCollection[index], knightCollection[targetGlobalIndex]] = [knightCollection[targetGlobalIndex], knightCollection[index]];
+
+            saveCollection();
+            renderCollectionList();
+        }
+
+        function saveCollection() {
+            localStorage.setItem('knightCollection', JSON.stringify(knightCollection));
+            localStorage.setItem('subCategories', JSON.stringify(subCategories));
+            localStorage.setItem('currentMainCategory', currentMainCategory);
+        }
+
+        function loadCollection() {
+            const savedCollection = localStorage.getItem('knightCollection');
+            const savedSubCategories = localStorage.getItem('subCategories');
+            const savedMainCat = localStorage.getItem('currentMainCategory');
+
+            if (savedCollection) knightCollection = JSON.parse(savedCollection);
+            if (savedSubCategories) subCategories = JSON.parse(savedSubCategories);
+            if (savedMainCat) currentMainCategory = savedMainCat;
+
+            renderMainCategoryTabs();
+            renderSubCategoryTabs();
+            renderCollectionList();
+        }
+
+        function exportCollection() {
+            const data = { knightCollection, subCategories };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'knight_collection.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importCollection(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.knightCollection && data.subCategories) {
+                        knightCollection = data.knightCollection;
+                        subCategories = data.subCategories;
+                        saveCollection();
+                        renderMainCategoryTabs();
+                        renderSubCategoryTabs();
+                        renderCollectionList();
+                        alert('นำเข้าสมุดอัศวินสำเร็จ!');
+                    } else {
+                        alert('ไฟล์สมุดอัศวินไม่ถูกต้อง!');
+                    }
+                } catch (err) {
+                    alert('ไฟล์ไม่ถูกต้อง!');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        function initialize() {
+            state = {
+                base: {}, lb: {}, potential: {},
+                lbChoices: {},
+                potentialLevels: {},
+                equipments: EQUIP_CONFIG.map(eq => ({ ...eq, mainStats: [], subStats: [] })),
+                selectedSet: null,
+                selectedTier: 0
+            };
+            ALL_STATS.forEach(s => { state.base[s.id] = 0; state.lb[s.id] = 0; state.potential[s.id] = 0; });
+
+            // Populate LB level dropdown
+            const lbLevelSelect = document.getElementById("inp-lbLevel");
+            lbLevelSelect.innerHTML = '<option value="none">เลือก LB Level</option>' +
+                Object.keys(LB_STATS_CONFIG).map(level => `<option value="${level}">${level}</option>`).join('');
+            renderStatGroups();
+            renderEquipments();
+            renderSets();
+            calculateAndRender();
+            ["inp-name", "inp-atkType", "inp-image", "inp-classType"].forEach(id => { document.getElementById(id).addEventListener("input", calculateAndRender); });
+            // The sets-container change listener is now handled by the individual select elements within renderSets
+            // document.getElementById("sets-container").addEventListener("change", calculateAndRender);
+            document.getElementById("inp-classType").addEventListener("change", applyClassBaseStats);
+            document.getElementById("inp-lbLevel").addEventListener("change", applyLbStats);
+            loadCollection();
+            applyClassBaseStats();
+            applyLbStats();
+        }
+
+        function openCollectionModal() {
+            document.getElementById('collection-modal').classList.remove('hidden');
+            renderMainCategoryTabs();
+            renderSubCategoryTabs();
+            renderCollectionList();
+        }
+
+        function closeCollectionModal() {
+            document.getElementById('collection-modal').classList.add('hidden');
+        }
+
+        document.addEventListener('DOMContentLoaded', initialize);
+    </script>
+
+    <!-- Knight Collection Modal -->
+    <div id="collection-modal" class="modal-overlay hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50">
+        <div class="book-container w-full max-w-7xl h-[90vh] flex flex-col overflow-hidden">
+            <!-- Book Header -->
+            <div class="flex justify-between items-center p-4 bg-[#3d2b1f] border-b border-[#d4a574]/30">
+                <div class="flex items-center gap-4">
+                    <h3 class="text-xl font-bold text-[#d4a574] flex items-center gap-2">
+                        <i class="ph-fill ph-book-open"></i> สมุดภาพอัศวิน
+                    </h3>
+                    <div id="main-category-tabs" class="book-top-nav hidden md:flex">
+                        <!-- Main categories will be rendered here -->
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="book-search-container">
+                        <i class="ph-bold ph-magnifying-glass text-[#3d2b1f] mr-2"></i>
+                        <input type="text" id="collection-search" placeholder="ค้นหาอัศวิน..." oninput="searchKnights(this.value)">
+                        <button onclick="clearSearch()" class="text-[#3d2b1f] hover:text-red-600 ml-1"><i class="ph-bold ph-x"></i></button>
+                    </div>
+                    <button onclick="closeCollectionModal()" class="text-[#d4a574] hover:text-white"><i class="ph-bold ph-house text-2xl"></i></button>
+                </div>
+            </div>
+
+            <div class="flex-1 flex overflow-hidden">
+                <!-- Sidebar (Categories) -->
+                <div class="w-48 book-sidebar p-2 flex flex-col border-r border-[#d4a574]/20">
+                    <div id="collection-tabs" class="flex-1 overflow-y-auto space-y-1">
+                        <!-- Categories will be rendered here -->
+                    </div>
+                    <div class="mt-2 pt-2 border-t border-[#d4a574]/20 space-y-2">
+                        <button onclick="addCategory()" class="w-full py-2 px-3 text-xs bg-[#d4a574] text-[#3d2b1f] font-bold rounded hover:opacity-90 flex items-center justify-center gap-1">
+                            <i class="ph-fill ph-plus"></i> เพิ่มหมวดหมู่
+                        </button>
+                        <button onclick="confirmAddKnight()" class="w-full py-2 px-3 text-xs bg-amber-500 text-black font-bold rounded hover:opacity-90 flex items-center justify-center gap-1">
+                            <i class="ph-fill ph-plus-circle"></i> เพิ่มอัศวินปัจจุบัน
+                        </button>
+                        <div class="grid grid-cols-2 gap-1">
+                            <button onclick="exportCollection()" class="py-2 text-[10px] bg-[#1a2847] text-white rounded border border-[#d4a574]/30 flex items-center justify-center gap-1">
+                                <i class="ph-bold ph-download-simple"></i> ส่งออก
+                            </button>
+                            <label class="py-2 text-[10px] bg-[#1a2847] text-white rounded border border-[#d4a574]/30 flex items-center justify-center gap-1 cursor-pointer">
+                                <i class="ph-bold ph-upload-simple"></i> นำเข้า
+                                <input type="file" id="import-collection-file" class="hidden" accept=".json" onchange="importCollection(event)">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content (Hero Grid) -->
+                <div class="flex-1 book-page p-6 overflow-y-auto">
+                    <div id="knight-list-container">
+                        <!-- Category Header will be rendered here -->
+                        <div id="knight-list" class="flex flex-wrap gap-0 justify-start">
+                            <!-- Hero cards will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Selection Modal -->
+    <div id="category-selection-modal" class="modal-overlay hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
+        <div class="modal-content glass-panel rounded-xl w-full max-w-md flex flex-col max-h-[85vh]">
+            <div class="modal-header flex justify-between items-center p-4 border-b border-slate-700 shrink-0">
+                <h3 class="text-lg font-bold text-gradient flex items-center gap-2"><i class="ph-fill ph-folder-open"></i>เลือกหมวดหมู่</h3>
+                <button onclick="closeCategorySelectionModal()" class="text-slate-400 hover:text-white"><i class="ph-bold ph-x text-2xl"></i></button>
+            </div>
+            <div class="p-4 overflow-y-auto custom-scrollbar">
+                <div id="category-selection-list" class="space-y-2"></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
