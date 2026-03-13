@@ -717,7 +717,7 @@
                 <div class="p-3 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg shadow-lg"><i class="ph-fill ph-sword text-2xl text-white"></i></div>
                 <div>
                     <h1 class="text-3xl font-bold text-gradient">Character Stat Calculator</h1>
-                    <p class="text-sm text-slate-400 mt-1">By CloneEscanor "V.2"</p>
+                    <p class="text-sm text-slate-400 mt-1">By CloneEscanor "V.1"</p>
                 </div>
             </div>
             <div class="flex items-center gap-2">
@@ -1873,16 +1873,19 @@
         function saveCollection() {
             localStorage.setItem('knightCollection', JSON.stringify(knightCollection));
             localStorage.setItem('subCategories', JSON.stringify(subCategories));
+            localStorage.setItem('mainCategories', JSON.stringify(mainCategories));
             localStorage.setItem('currentMainCategory', currentMainCategory);
         }
 
         function loadCollection() {
             const savedCollection = localStorage.getItem('knightCollection');
             const savedSubCategories = localStorage.getItem('subCategories');
+            const savedMainCategories = localStorage.getItem('mainCategories');
             const savedMainCat = localStorage.getItem('currentMainCategory');
 
             if (savedCollection) knightCollection = JSON.parse(savedCollection);
             if (savedSubCategories) subCategories = JSON.parse(savedSubCategories);
+            if (savedMainCategories) mainCategories = JSON.parse(savedMainCategories);
             if (savedMainCat) currentMainCategory = savedMainCat;
 
             renderMainCategoryTabs();
@@ -1891,15 +1894,23 @@
         }
 
         function exportCollection() {
-            const data = { knightCollection, subCategories };
+            const data = {
+                knightCollection,
+                subCategories,
+                mainCategories,
+                exportDate: new Date().toISOString(),
+                version: "1.1"
+            };
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'knight_collection.json';
+            a.download = `7k_collection_${new Date().toISOString().split('T')[0]}.json`;
             a.click();
             URL.revokeObjectURL(url);
         }
+
+        let pendingImportData = null;
 
         function importCollection(event) {
             const file = event.target.files[0];
@@ -1907,24 +1918,88 @@
             const reader = new FileReader();
             reader.onload = (e) => {
                 try {
-                    const data = JSON.parse(e.target.result);
-                    if (data.knightCollection && data.subCategories) {
-                        knightCollection = data.knightCollection;
-                        subCategories = data.subCategories;
-                        saveCollection();
-                        renderMainCategoryTabs();
-                        renderSubCategoryTabs();
-                        renderCollectionList();
-                        alert('นำเข้าสมุดอัศวินสำเร็จ!');
+                    pendingImportData = JSON.parse(e.target.result);
+                    if (pendingImportData.knightCollection) {
+                        openImportModeModal();
                     } else {
-                        alert('ไฟล์สมุดอัศวินไม่ถูกต้อง!');
+                        alert('ไฟล์สมุดอัศวินไม่ถูกต้อง! ไม่พบข้อมูล knightCollection');
                     }
                 } catch (err) {
-                    alert('ไฟล์ไม่ถูกต้อง!');
+                    console.error(err);
+                    alert('ไฟล์ไม่ถูกต้อง! กรุณาตรวจสอบรูปแบบไฟล์ JSON');
                 }
             };
             reader.readAsText(file);
             event.target.value = '';
+        }
+
+        function openImportModeModal() {
+            document.getElementById('import-mode-modal').classList.remove('hidden');
+        }
+
+        function closeImportModeModal() {
+            document.getElementById('import-mode-modal').classList.add('hidden');
+            pendingImportData = null;
+        }
+
+        function processImport(mode) {
+            if (!pendingImportData) return;
+            const data = pendingImportData;
+
+            if (mode === 'overwrite') {
+                if (!confirm('การเขียนทับจะลบข้อมูลอัศวินและหมวดหมู่เดิมของคุณทั้งหมด คุณแน่ใจหรือไม่?')) return;
+                knightCollection = [];
+                // Reset subCategories to defaults before merging
+                subCategories = {
+                    'ปรับแต่ง': ['ทั้งหมด'], 'พิเศษ': ['ทั้งหมด'], 'อัศวินทั่วไป': ['ทั้งหมด'],
+                    'ทวีปอาร์เด': ['ทั้งหมด'], 'ทวีปไอชา': ['ทั้งหมด'], 'อื่นๆ': ['ทั้งหมด']
+                };
+                mainCategories = ['ปรับแต่ง', 'พิเศษ', 'อัศวินทั่วไป', 'ทวีปอาร์เด', 'ทวีปไอชา', 'อื่นๆ'];
+            }
+
+            // 1. Handle mainCategories
+            if (data.mainCategories && Array.isArray(data.mainCategories)) {
+                mainCategories = [...new Set([...mainCategories, ...data.mainCategories])];
+            }
+
+            // 2. Data migration and validation for knights
+            const importedKnights = data.knightCollection.map(knight => {
+                if (!knight.mainCategory && knight.category) knight.mainCategory = knight.category;
+                if (!knight.mainCategory) knight.mainCategory = 'อื่นๆ';
+                if (!knight.subCategory) knight.subCategory = 'ทั้งหมด';
+                if (!mainCategories.includes(knight.mainCategory)) mainCategories.push(knight.mainCategory);
+                return knight;
+            });
+
+            if (mode === 'merge') {
+                knightCollection = [...knightCollection, ...importedKnights];
+            } else {
+                knightCollection = importedKnights;
+            }
+
+            // 3. Handle subCategories
+            if (data.subCategories) {
+                for (const mainCat in data.subCategories) {
+                    if (!subCategories[mainCat]) {
+                        subCategories[mainCat] = data.subCategories[mainCat];
+                    } else {
+                        subCategories[mainCat] = [...new Set([...subCategories[mainCat], ...data.subCategories[mainCat]])];
+                    }
+                }
+            }
+
+            // 4. Final consistency check
+            knightCollection.forEach(k => {
+                if (!subCategories[k.mainCategory]) subCategories[k.mainCategory] = ['ทั้งหมด'];
+                if (!subCategories[k.mainCategory].includes(k.subCategory)) subCategories[k.mainCategory].push(k.subCategory);
+            });
+
+            saveCollection();
+            renderMainCategoryTabs();
+            renderSubCategoryTabs();
+            renderCollectionList();
+            closeImportModeModal();
+            alert(mode === 'merge' ? 'รวมข้อมูลสมุดอัศวินสำเร็จ!' : 'เขียนทับข้อมูลสมุดอัศวินสำเร็จ!');
         }
 
         function resetCollection() {
@@ -2118,6 +2193,36 @@
             </div>
             <div class="p-4 overflow-y-auto custom-scrollbar">
                 <div id="category-selection-list" class="space-y-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Mode Selection Modal -->
+    <div id="import-mode-modal" class="modal-overlay hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-[60]">
+        <div class="modal-content glass-panel rounded-xl w-full max-w-md p-6">
+            <h3 class="text-xl font-bold text-amber-500 mb-4 flex items-center gap-2">
+                <i class="ph-fill ph-download-simple"></i> เลือกรูปแบบการนำเข้า
+            </h3>
+            <p class="text-slate-300 text-sm mb-6">คุณต้องการนำข้อมูลเข้าสู่สมุดภาพในรูปแบบใด?</p>
+
+            <div class="space-y-3">
+                <button onclick="processImport('merge')" class="w-full p-4 text-left rounded-lg border border-slate-700 hover:bg-amber-500/10 hover:border-amber-500 transition-all group">
+                    <div class="font-bold text-white group-hover:text-amber-400 flex items-center gap-2">
+                        <i class="ph-bold ph-intersect"></i> รวมข้อมูล (Merge)
+                    </div>
+                    <div class="text-xs text-slate-400 mt-1">เพิ่มอัศวินจากไฟล์ต่อจากข้อมูลเดิมที่มีอยู่ (ข้อมูลเดิมไม่หาย)</div>
+                </button>
+
+                <button onclick="processImport('overwrite')" class="w-full p-4 text-left rounded-lg border border-slate-700 hover:bg-red-500/10 hover:border-red-500 transition-all group">
+                    <div class="font-bold text-white group-hover:text-red-400 flex items-center gap-2">
+                        <i class="ph-bold ph-copy"></i> เขียนทับ (Overwrite)
+                    </div>
+                    <div class="text-xs text-slate-400 mt-1">ลบข้อมูลเดิมทั้งหมดและใช้ข้อมูลจากไฟล์นี้แทน</div>
+                </button>
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <button onclick="closeImportModeModal()" class="px-4 py-2 text-sm text-slate-400 hover:text-white">ยกเลิก</button>
             </div>
         </div>
     </div>
