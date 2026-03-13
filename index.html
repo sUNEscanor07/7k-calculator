@@ -991,10 +991,10 @@
                 label = stat.label + ' %';
             }
             return `
-                                                            <div class="grid grid-cols-2 items-center gap-2">
-                                                                <label class="text-sm flex items-center gap-2 truncate"><i class="ph-fill ${stat.icon} text-slate-400"></i>${label}</label>
-                                                                <input type="number" value="${state[group][stat.id]}" oninput="updateStat('${group}', '${stat.id}', this.value)" class="w-full text-right p-1">
-                                                            </div>`;
+                                                        <div class="grid grid-cols-2 items-center gap-2">
+                                                            <label class="text-sm flex items-center gap-2 truncate"><i class="ph-fill ${stat.icon} text-slate-400"></i>${label}</label>
+                                                            <input type="number" value="${state[group][stat.id]}" oninput="updateStat('${group}', '${stat.id}', this.value)" class="w-full text-right p-1">
+                                                        </div>`;
         }
 
         function calculatePotentialValue(statId, level) {
@@ -1029,9 +1029,9 @@
                             label = stat.label.replace(' %', '') + ' %';
                         }
                         return `<div class="grid grid-cols-2 items-center gap-2">
-                                                            <label class="text-sm flex items-center gap-2 truncate"><i class="ph-fill ${stat.icon} text-slate-400"></i>${label}</label>
-                                                            <span class="text-right text-purple-300">${value}${stat.suffix || ''}</span>
-                                                        </div>`;
+                                                        <label class="text-sm flex items-center gap-2 truncate"><i class="ph-fill ${stat.icon} text-slate-400"></i>${label}</label>
+                                                        <span class="text-right text-purple-300">${value}${stat.suffix || ''}</span>
+                                                    </div>`;
                     }
                     return '';
                 }).join('');
@@ -1041,18 +1041,18 @@
                 const currentLv = state.potentialLevels ? (state.potentialLevels[stat.id] || 0) : 0;
                 const calculatedVal = calculatePotentialValue(stat.id, currentLv);
                 return `
-                                            <div class="grid grid-cols-2 items-center gap-2 bg-slate-900/30 p-2 rounded border border-slate-700/30">
-                                                <div class="flex flex-col">
-                                                    <label class="text-xs flex items-center gap-2 truncate text-slate-300"><i class="ph-fill ${stat.icon} text-pink-400"></i>${stat.label}</label>
-                                                    <span class="text-[10px] text-pink-300/70 ml-6">+${calculatedVal.toLocaleString()}</span>
-                                                </div>
-                                                <div class="flex items-center gap-2">
-                                                    <span class="text-[10px] text-slate-500">Lv.</span>
-                                                    <select onchange="updatePotentialLevel('${stat.id}', this.value)" class="w-full text-right text-xs p-1">
-                                                        ${Array.from({ length: 31 }, (_, i) => `<option value="${i}" ${currentLv == i ? 'selected' : ''}>${i}</option>`).join('')}
-                                                    </select>
-                                                </div>
-                                            </div>`;
+                                        <div class="grid grid-cols-2 items-center gap-2 bg-slate-900/30 p-2 rounded border border-slate-700/30">
+                                            <div class="flex flex-col">
+                                                <label class="text-xs flex items-center gap-2 truncate text-slate-300"><i class="ph-fill ${stat.icon} text-pink-400"></i>${stat.label}</label>
+                                                <span class="text-[10px] text-pink-300/70 ml-6">+${calculatedVal.toLocaleString()}</span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <span class="text-[10px] text-slate-500">Lv.</span>
+                                                <select onchange="updatePotentialLevel('${stat.id}', this.value)" class="w-full text-right text-xs p-1">
+                                                    ${Array.from({ length: 31 }, (_, i) => `<option value="${i}" ${currentLv == i ? 'selected' : ''}>${i}</option>`).join('')}
+                                                </select>
+                                            </div>
+                                        </div>`;
             }).join("");
         }
 
@@ -1075,39 +1075,39 @@
                     let multiplierHTML = '';
                     if (type === 'subStats') {
                         multiplierHTML = `
-                                                                        <div class="flex items-center gap-1 ml-1">
-                                                                            <button onclick="updateMultiplier(${eqIndex}, ${index}, -1)" class="multiplier-btn inactive" ${stat.multiplier <= 0 ? 'disabled' : ''}>-</button>
-                                                                            <span class="text-[10px] font-bold text-amber-400 w-3 text-center">${stat.multiplier || 0}</span>
-                                                                            <button onclick="updateMultiplier(${eqIndex}, ${index}, 1)" class="multiplier-btn ${stat.multiplier > 0 ? 'active' : 'inactive'}" ${remainingMultipliers <= 0 ? 'disabled' : ''}>+</button>
-                                                                        </div>
-                                                                    `;
+                                                                    <div class="flex items-center gap-1 ml-1">
+                                                                        <button onclick="updateMultiplier(${eqIndex}, ${index}, -1)" class="multiplier-btn inactive" ${stat.multiplier <= 0 ? 'disabled' : ''}>-</button>
+                                                                        <span class="text-[10px] font-bold text-amber-400 w-3 text-center">${stat.multiplier || 0}</span>
+                                                                        <button onclick="updateMultiplier(${eqIndex}, ${index}, 1)" class="multiplier-btn ${stat.multiplier > 0 ? 'active' : 'inactive'}" ${remainingMultipliers <= 0 ? 'disabled' : ''}>+</button>
+                                                                    </div>
+                                                                `;
                     }
                     return `
-                                                                    <div class="flex items-center gap-1 bg-slate-900/50 p-1.5 rounded border border-slate-700/50">
-                                                                        <select class="flex-1 text-[10px] p-1" onchange="updateEquipStat(${eqIndex}, '${type}', ${index}, 'type', this.value)">${getStatOptionsHTML(stat.type)}</select>
-                                                                        <input type="number" class="w-14 text-[10px] p-1 text-center" value="${stat.value}" onchange="updateEquipStat(${eqIndex}, '${type}', ${index}, 'value', this.value)">
-                                                                        ${multiplierHTML}
-                                                                        <button onclick="removeEquipStat(${eqIndex}, '${type}', ${index})" class="text-red-500 p-1"><i class="ph-fill ph-trash text-xs"></i></button>
-                                                                    </div>`;
+                                                                <div class="flex items-center gap-1 bg-slate-900/50 p-1.5 rounded border border-slate-700/50">
+                                                                    <select class="flex-1 text-[10px] p-1" onchange="updateEquipStat(${eqIndex}, '${type}', ${index}, 'type', this.value)">${getStatOptionsHTML(stat.type)}</select>
+                                                                    <input type="number" class="w-14 text-[10px] p-1 text-center" value="${stat.value}" onchange="updateEquipStat(${eqIndex}, '${type}', ${index}, 'value', this.value)">
+                                                                    ${multiplierHTML}
+                                                                    <button onclick="removeEquipStat(${eqIndex}, '${type}', ${index})" class="text-red-500 p-1"><i class="ph-fill ph-trash text-xs"></i></button>
+                                                                </div>`;
                 };
 
                 return `
-                                                                <div class="stat-card ${cardClass}">
-                                                                    <div class="flex justify-between items-center mb-3">
-                                                                        <h4 class="font-bold flex items-center gap-2"><i class="ph-fill ${eq.icon}"></i>${eq.label}</h4>
-                                                                        <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-400">
-                                                                            Multiplier: <span class="${remainingMultipliers === 0 ? 'text-red-400' : 'text-amber-400'}">${totalMultipliers}/5</span>
-                                                                        </span>
-                                                                    </div>
-                                                                    <div class="mb-3">
-                                                                        <div class="flex justify-between items-center mb-2"><label class="text-[10px] font-medium text-slate-400 uppercase">Main Stats</label><button onclick="addEquipStat(${eqIndex}, 'mainStats')" class="btn-secondary btn-sm !p-1"><i class="ph-fill ph-plus text-xs"></i></button></div>
-                                                                        <div class="space-y-1">${eq.mainStats.map((s, i) => createStatRow('mainStats', s, i)).join('') || '<p class="text-[10px] text-slate-600 italic text-center py-1">ไม่มี Main Stat</p>'}</div>
-                                                                    </div>
-                                                                    <div>
-                                                                        <div class="flex justify-between items-center mb-2"><label class="text-[10px] font-medium text-slate-400 uppercase">Sub Stats</label><button onclick="addEquipStat(${eqIndex}, 'subStats')" class="btn-secondary btn-sm !p-1"><i class="ph-fill ph-plus text-xs"></i></button></div>
-                                                                        <div class="space-y-1">${eq.subStats.map((s, i) => createStatRow('subStats', s, i)).join('') || '<p class="text-[10px] text-slate-600 italic text-center py-1">ไม่มี Sub Stat</p>'}</div>
-                                                                    </div>
-                                                                </div>`;
+                                                            <div class="stat-card ${cardClass}">
+                                                                <div class="flex justify-between items-center mb-3">
+                                                                    <h4 class="font-bold flex items-center gap-2"><i class="ph-fill ${eq.icon}"></i>${eq.label}</h4>
+                                                                    <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-400">
+                                                                        Multiplier: <span class="${remainingMultipliers === 0 ? 'text-red-400' : 'text-amber-400'}">${totalMultipliers}/5</span>
+                                                                    </span>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <div class="flex justify-between items-center mb-2"><label class="text-[10px] font-medium text-slate-400 uppercase">Main Stats</label><button onclick="addEquipStat(${eqIndex}, 'mainStats')" class="btn-secondary btn-sm !p-1"><i class="ph-fill ph-plus text-xs"></i></button></div>
+                                                                    <div class="space-y-1">${eq.mainStats.map((s, i) => createStatRow('mainStats', s, i)).join('') || '<p class="text-[10px] text-slate-600 italic text-center py-1">ไม่มี Main Stat</p>'}</div>
+                                                                </div>
+                                                                <div>
+                                                                    <div class="flex justify-between items-center mb-2"><label class="text-[10px] font-medium text-slate-400 uppercase">Sub Stats</label><button onclick="addEquipStat(${eqIndex}, 'subStats')" class="btn-secondary btn-sm !p-1"><i class="ph-fill ph-plus text-xs"></i></button></div>
+                                                                    <div class="space-y-1">${eq.subStats.map((s, i) => createStatRow('subStats', s, i)).join('') || '<p class="text-[10px] text-slate-600 italic text-center py-1">ไม่มี Sub Stat</p>'}</div>
+                                                                </div>
+                                                            </div>`;
             }).join('');
         }
 
@@ -1134,47 +1134,47 @@
         function renderSets() {
             const container = document.getElementById('sets-container');
             let html = `
-                                <div class="stat-card">
-                                    <div class="flex justify-between items-center mb-3">
-                                        <h4 class="font-bold flex items-center gap-2 text-amber-400"><i class="ph-fill ph-polygon"></i>เลือกเซตโบนัส</h4>
-                                        <button onclick="resetSetBonus()" class="btn-secondary btn-sm"><i class="ph-bold ph-arrow-counter-clockwise"></i>รีเซ็ต</button>
-                                    </div>
-                                    <div class="mb-3">
-                                        <select onchange="updateSet(this.value)" class="w-full text-xs p-1">
-                                            <option value="">-- ไม่เลือกเซต --</option>
-                                            ${SET_BONUS_CONFIG.map(set => `<option value="${set.id}" ${state.selectedSet === set.id ? 'selected' : ''}>${set.name}</option>`).join('')}
-                                        </select>
-                                    </div>
-                            `;
+                            <div class="stat-card">
+                                <div class="flex justify-between items-center mb-3">
+                                    <h4 class="font-bold flex items-center gap-2 text-amber-400"><i class="ph-fill ph-polygon"></i>เลือกเซตโบนัส</h4>
+                                    <button onclick="resetSetBonus()" class="btn-secondary btn-sm"><i class="ph-bold ph-arrow-counter-clockwise"></i>รีเซ็ต</button>
+                                </div>
+                                <div class="mb-3">
+                                    <select onchange="updateSet(this.value)" class="w-full text-xs p-1">
+                                        <option value="">-- ไม่เลือกเซต --</option>
+                                        ${SET_BONUS_CONFIG.map(set => `<option value="${set.id}" ${state.selectedSet === set.id ? 'selected' : ''}>${set.name}</option>`).join('')}
+                                    </select>
+                                </div>
+                        `;
 
             if (state.selectedSet) {
                 const selectedSet = SET_BONUS_CONFIG.find(s => s.id === state.selectedSet);
                 if (selectedSet) {
                     html += `
-                                        <div class="space-y-2 mb-3">
-                                            <h4 class="font-bold flex items-center gap-2 text-amber-400/80"><i class="ph-fill ph-star"></i>เลือกขั้น</h4>
-                                            <select onchange="updateSetTier(this.value)" class="w-full text-xs p-1">
-                                                <option value="0">-- ไม่เลือกขั้น --</option>
-                                                <option value="1" ${state.selectedTier === 1 ? 'selected' : ''}>ขั้น 1</option>
-                                                <option value="2" ${state.selectedTier === 2 ? 'selected' : ''}>ขั้น 2</option>
-                                            </select>
-                                        </div>
-                                    `;
+                                    <div class="space-y-2 mb-3">
+                                        <h4 class="font-bold flex items-center gap-2 text-amber-400/80"><i class="ph-fill ph-star"></i>เลือกขั้น</h4>
+                                        <select onchange="updateSetTier(this.value)" class="w-full text-xs p-1">
+                                            <option value="0">-- ไม่เลือกขั้น --</option>
+                                            <option value="1" ${state.selectedTier === 1 ? 'selected' : ''}>ขั้น 1</option>
+                                            <option value="2" ${state.selectedTier === 2 ? 'selected' : ''}>ขั้น 2</option>
+                                        </select>
+                                    </div>
+                                `;
 
                     if (state.selectedTier > 0) {
                         const tierStats = selectedSet.tiers[state.selectedTier - 1];
                         if (tierStats && tierStats.stats.length > 0) {
                             html += `<div class="space-y-2 mt-4 border-t border-slate-700/50 pt-4">
-                                                <h5 class="text-sm font-bold text-amber-400">โบนัสที่ได้รับ:</h5>`;
+                                            <h5 class="text-sm font-bold text-amber-400">โบนัสที่ได้รับ:</h5>`;
                             tierStats.stats.forEach(s => {
                                 const statInfo = ALL_STATS.find(allStat => allStat.id === s.type);
                                 if (statInfo) {
                                     html += `
-                                                        <div class="flex items-center gap-2">
-                                                            <i class="ph-fill ${statInfo.icon} text-slate-500"></i>
-                                                            <span>${statInfo.label}: +${s.value}${statInfo.suffix || ''}</span>
-                                                        </div>
-                                                    `;
+                                                    <div class="flex items-center gap-2">
+                                                        <i class="ph-fill ${statInfo.icon} text-slate-500"></i>
+                                                        <span>${statInfo.label}: +${s.value}${statInfo.suffix || ''}</span>
+                                                    </div>
+                                                `;
                                 }
                             });
                             html += `</div>`;
@@ -1207,14 +1207,14 @@
                     const div = document.createElement('div');
                     div.className = 'info-group';
                     div.innerHTML = `<label class="text-xs text-purple-400">${config.label}</label>
-                                                             <select class="w-full text-xs" onchange="updateLbChoice('${levelKey}', this.value)">
-                                                                <option value="">-- เลือกค่าสถานะ --</option>
-                                                                ${Object.keys(config.options).map(statId => {
+                                                         <select class="w-full text-xs" onchange="updateLbChoice('${levelKey}', this.value)">
+                                                            <option value="">-- เลือกค่าสถานะ --</option>
+                                                            ${Object.keys(config.options).map(statId => {
                         const stat = ALL_STATS.find(s => s.id === statId);
                         const isSelected = state.lbChoices && state.lbChoices[levelKey] === statId;
                         return `<option value="${statId}" ${isSelected ? 'selected' : ''}>${stat.label} +${config.options[statId]}${stat.suffix || ''}</option>`;
                     }).join('')}
-                                                             </select>`;
+                                                         </select>`;
                     container.appendChild(div);
                 }
             }
@@ -1301,19 +1301,19 @@
 
             // Potential Stats Preview
             const potentialPreviewHTML = `
-                                <div class="potential-item">
-                                    <div class="potential-item-label"><i class="ph-fill ph-sword"></i>พลังโจมตี</div>
-                                    <span>LV.${state.potentialLevels.atk || 0}</span>
-                                </div>
-                                <div class="potential-item">
-                                    <div class="potential-item-label"><i class="ph-fill ph-shield"></i>พลังป้องกัน</div>
-                                    <span>LV.${state.potentialLevels.def || 0}</span>
-                                </div>
-                                <div class="potential-item">
-                                    <div class="potential-item-label"><i class="ph-fill ph-heart"></i>พลังชีวิต</div>
-                                    <span>LV.${state.potentialLevels.hp || 0}</span>
-                                </div>
-                            `;
+                            <div class="potential-item">
+                                <div class="potential-item-label"><i class="ph-fill ph-sword"></i>พลังโจมตี</div>
+                                <span>LV.${state.potentialLevels.atk || 0}</span>
+                            </div>
+                            <div class="potential-item">
+                                <div class="potential-item-label"><i class="ph-fill ph-shield"></i>พลังป้องกัน</div>
+                                <span>LV.${state.potentialLevels.def || 0}</span>
+                            </div>
+                            <div class="potential-item">
+                                <div class="potential-item-label"><i class="ph-fill ph-heart"></i>พลังชีวิต</div>
+                                <span>LV.${state.potentialLevels.hp || 0}</span>
+                            </div>
+                        `;
             document.getElementById("potential-preview-grid").innerHTML = potentialPreviewHTML;
 
             // Equipment Display with Multiplier for Sub Stats
@@ -1341,16 +1341,16 @@
                 });
 
                 return `
-                                    <div class="equipment-card ${cardClass}">
-                                        <div class="equipment-card-header">
-                                            <div class="equipment-icon-main"><i class="ph-fill ${eq.icon}"></i></div>
-                                            ${eq.label}
-                                        </div>
-                                        <div class="equipment-stats-list">
-                                            ${statsHTML || '<div class="text-slate-500 text-xs italic text-center">ไม่มีสถานะ</div>'}
-                                        </div>
+                                <div class="equipment-card ${cardClass}">
+                                    <div class="equipment-card-header">
+                                        <div class="equipment-icon-main"><i class="ph-fill ${eq.icon}"></i></div>
+                                        ${eq.label}
                                     </div>
-                                `;
+                                    <div class="equipment-stats-list">
+                                        ${statsHTML || '<div class="text-slate-500 text-xs italic text-center">ไม่มีสถานะ</div>'}
+                                    </div>
+                                </div>
+                            `;
             });
 
             document.getElementById("prev-weapons-armors-display").innerHTML = equipmentCards.join('');
@@ -1420,12 +1420,12 @@
                 const label = stat.id === 'atk' ? `พลังโจมตี (${document.getElementById('inp-atkType').value})` : stat.label;
 
                 return `<div class="flex items-center justify-between py-2 border-b border-slate-700/50 last:border-0">
-                                                                <div class="flex items-center gap-2"><i class="ph-fill ${stat.icon} text-slate-500"></i><span class="text-sm">${label}</span></div>
-                                                                <div class="flex items-center gap-3">
-                                                                    ${bonusText ? `<span class="stat-bonus text-xs">${bonusText}</span>` : ''}
-                                                                    <span class="stat-value text-base">${displayVal}</span>
-                                                                </div>
-                                                            </div>`;
+                                                            <div class="flex items-center gap-2"><i class="ph-fill ${stat.icon} text-slate-500"></i><span class="text-sm">${label}</span></div>
+                                                            <div class="flex items-center gap-3">
+                                                                ${bonusText ? `<span class="stat-bonus text-xs">${bonusText}</span>` : ''}
+                                                                <span class="stat-value text-base">${displayVal}</span>
+                                                            </div>
+                                                        </div>`;
             }).join('');
         }
 
@@ -1549,25 +1549,25 @@
                             const displayIndex = knightCollection.indexOf(knight);
                             const isActive = displayIndex === selectedKnightIndex ? 'ring-4 ring-amber-500 scale-105' : '';
                             return `
-                                                            <div class="hero-grid-card group ${isActive}" onclick="loadKnight(${displayIndex})" title="${knight.name} (คลิกเพื่อโหลด)">
+                                                        <div class="hero-grid-card group ${isActive}" onclick="loadKnight(${displayIndex})" title="${knight.name} (คลิกเพื่อโหลด)">
 
-                                                                <img src="${knight.image}" alt="${knight.name}" onerror="this.src='https://via.placeholder.com/100x140?text=No+Image'">
-                                                                <div class="hero-name-tag">${knight.name}</div>
-                                                                <div class="absolute top-1 right-1 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                                    <button onclick="event.stopPropagation(); deleteKnight(${displayIndex})" class="bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-700" title="ลบ">
-                                                                        <i class="ph-bold ph-trash text-[10px]"></i>
-                                                                    </button>
-                                                                </div>
-                                                                <div class="absolute top-1 left-1 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                                    <button onclick="event.stopPropagation(); moveKnight(${displayIndex}, -1)" class="bg-amber-500 text-black rounded-full w-5 h-5 flex items-center justify-center hover:bg-amber-600" title="ย้ายไปก่อนหน้า" ${index === 0 ? 'style="display:none"' : ''}>
-                                                                        <i class="ph-bold ph-caret-left text-[10px]"></i>
-                                                                    </button>
-                                                                    <button onclick="event.stopPropagation(); moveKnight(${displayIndex}, 1)" class="bg-amber-500 text-black rounded-full w-5 h-5 flex items-center justify-center hover:bg-amber-600" title="ย้ายไปถัดไป" ${index === knightsInSub.length - 1 ? 'style="display:none"' : ''}>
-                                                                        <i class="ph-bold ph-caret-right text-[10px]"></i>
-                                                                    </button>
-                                                                </div>
+                                                            <img src="${knight.image}" alt="${knight.name}" onerror="this.src='https://via.placeholder.com/100x140?text=No+Image'">
+                                                            <div class="hero-name-tag">${knight.name}</div>
+                                                            <div class="absolute top-1 right-1 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                <button onclick="event.stopPropagation(); deleteKnight(${displayIndex})" class="bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-700" title="ลบ">
+                                                                    <i class="ph-bold ph-trash text-[10px]"></i>
+                                                                </button>
                                                             </div>
-                                                        `;
+                                                            <div class="absolute top-1 left-1 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                <button onclick="event.stopPropagation(); moveKnight(${displayIndex}, -1)" class="bg-amber-500 text-black rounded-full w-5 h-5 flex items-center justify-center hover:bg-amber-600" title="ย้ายไปก่อนหน้า" ${index === 0 ? 'style="display:none"' : ''}>
+                                                                    <i class="ph-bold ph-caret-left text-[10px]"></i>
+                                                                </button>
+                                                                <button onclick="event.stopPropagation(); moveKnight(${displayIndex}, 1)" class="bg-amber-500 text-black rounded-full w-5 h-5 flex items-center justify-center hover:bg-amber-600" title="ย้ายไปถัดไป" ${index === knightsInSub.length - 1 ? 'style="display:none"' : ''}>
+                                                                    <i class="ph-bold ph-caret-right text-[10px]"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    `;
                         }).join('');
                         container.appendChild(grid);
                     }
@@ -1601,25 +1601,25 @@
                     const displayIndex = knightCollection.indexOf(knight);
                     const isActive = displayIndex === selectedKnightIndex ? 'ring-4 ring-amber-500 scale-105' : '';
                     return `
-                                                    <div class="hero-grid-card group ${isActive}" onclick="loadKnight(${displayIndex})" title="${knight.name} (คลิกเพื่อโหลด)">
+                                                <div class="hero-grid-card group ${isActive}" onclick="loadKnight(${displayIndex})" title="${knight.name} (คลิกเพื่อโหลด)">
 
-                                                        <img src="${knight.image}" alt="${knight.name}" onerror="this.src='https://via.placeholder.com/100x140?text=No+Image'">
-                                                        <div class="hero-name-tag">${knight.name}</div>
-                                                        <div class="absolute top-1 right-1 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                            <button onclick="event.stopPropagation(); deleteKnight(${displayIndex})" class="bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-700" title="ลบ">
-                                                                <i class="ph-bold ph-trash text-[10px]"></i>
-                                                            </button>
-                                                        </div>
-                                                        <div class="absolute top-1 left-1 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                            <button onclick="event.stopPropagation(); moveKnight(${displayIndex}, -1)" class="bg-amber-500 text-black rounded-full w-5 h-5 flex items-center justify-center hover:bg-amber-600" title="ย้ายไปก่อนหน้า" ${index === 0 ? 'style="display:none"' : ''}>
-                                                                <i class="ph-bold ph-caret-left text-[10px]"></i>
-                                                            </button>
-                                                            <button onclick="event.stopPropagation(); moveKnight(${displayIndex}, 1)" class="bg-amber-500 text-black rounded-full w-5 h-5 flex items-center justify-center hover:bg-amber-600" title="ย้ายไปถัดไป" ${index === filteredKnights.length - 1 ? 'style="display:none"' : ''}>
-                                                                <i class="ph-bold ph-caret-right text-[10px]"></i>
-                                                            </button>
-                                                        </div>
+                                                    <img src="${knight.image}" alt="${knight.name}" onerror="this.src='https://via.placeholder.com/100x140?text=No+Image'">
+                                                    <div class="hero-name-tag">${knight.name}</div>
+                                                    <div class="absolute top-1 right-1 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <button onclick="event.stopPropagation(); deleteKnight(${displayIndex})" class="bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-700" title="ลบ">
+                                                            <i class="ph-bold ph-trash text-[10px]"></i>
+                                                        </button>
                                                     </div>
-                                                `;
+                                                    <div class="absolute top-1 left-1 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <button onclick="event.stopPropagation(); moveKnight(${displayIndex}, -1)" class="bg-amber-500 text-black rounded-full w-5 h-5 flex items-center justify-center hover:bg-amber-600" title="ย้ายไปก่อนหน้า" ${index === 0 ? 'style="display:none"' : ''}>
+                                                            <i class="ph-bold ph-caret-left text-[10px]"></i>
+                                                        </button>
+                                                        <button onclick="event.stopPropagation(); moveKnight(${displayIndex}, 1)" class="bg-amber-500 text-black rounded-full w-5 h-5 flex items-center justify-center hover:bg-amber-600" title="ย้ายไปถัดไป" ${index === filteredKnights.length - 1 ? 'style="display:none"' : ''}>
+                                                            <i class="ph-bold ph-caret-right text-[10px]"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            `;
                 }).join('');
                 container.appendChild(grid);
             }
@@ -1641,25 +1641,25 @@
                 const isActive = cat === currentSubCategory ? 'active' : '';
                 const isSpecial = cat === 'ทั้งหมด';
                 return `
-                                                    <div class="relative group">
-                                                        <button onclick="selectSubCategory('${cat}')" class="sidebar-tab ${isActive}">
-                                                            ${cat}
-                                                        </button>
-                                                        <div class="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                            ${!isSpecial ? `
-                                                                <button onclick="moveSubCategory('${cat}', -1)" class="text-amber-400 p-0.5 hover:text-white" title="ย้ายขึ้น" ${idx <= 1 ? 'style="display:none"' : ''}>
-                                                                    <i class="ph-bold ph-caret-up"></i>
-                                                                </button>
-                                                                <button onclick="moveSubCategory('${cat}', 1)" class="text-amber-400 p-0.5 hover:text-white" title="ย้ายลง" ${idx === subs.length - 1 ? 'style="display:none"' : ''}>
-                                                                    <i class="ph-bold ph-caret-down"></i>
-                                                                </button>
-                                                                <button onclick="deleteSubCategory('${cat}')" class="text-red-400 p-0.5 hover:text-red-600" title="ลบ">
-                                                                    <i class="ph-fill ph-trash"></i>
-                                                                </button>
-                                                            ` : ''}
-                                                        </div>
+                                                <div class="relative group">
+                                                    <button onclick="selectSubCategory('${cat}')" class="sidebar-tab ${isActive}">
+                                                        ${cat}
+                                                    </button>
+                                                    <div class="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        ${!isSpecial ? `
+                                                            <button onclick="moveSubCategory('${cat}', -1)" class="text-amber-400 p-0.5 hover:text-white" title="ย้ายขึ้น" ${idx <= 1 ? 'style="display:none"' : ''}>
+                                                                <i class="ph-bold ph-caret-up"></i>
+                                                            </button>
+                                                            <button onclick="moveSubCategory('${cat}', 1)" class="text-amber-400 p-0.5 hover:text-white" title="ย้ายลง" ${idx === subs.length - 1 ? 'style="display:none"' : ''}>
+                                                                <i class="ph-bold ph-caret-down"></i>
+                                                            </button>
+                                                            <button onclick="deleteSubCategory('${cat}')" class="text-red-400 p-0.5 hover:text-red-600" title="ลบ">
+                                                                <i class="ph-fill ph-trash"></i>
+                                                            </button>
+                                                        ` : ''}
                                                     </div>
-                                                `;
+                                                </div>
+                                            `;
             }).join('');
         }
 
@@ -1750,12 +1750,12 @@
             let html = '';
             mainCategories.forEach(main => {
                 html += `<div class="mb-4">
-                                                    <h4 class="text-amber-500 font-bold mb-2 border-b border-amber-500/30 pb-1">${main}</h4>
-                                                    <div class="grid grid-cols-2 gap-2">`;
+                                                <h4 class="text-amber-500 font-bold mb-2 border-b border-amber-500/30 pb-1">${main}</h4>
+                                                <div class="grid grid-cols-2 gap-2">`;
                 subCategories[main].forEach(sub => {
                     html += `<button onclick="selectCategoryAndAdd('${main}', '${sub}')" class="text-left p-2 text-sm rounded border border-slate-700 hover:bg-amber-700/30 hover:border-amber-500 transition-all text-white">
-                                                        ${sub}
-                                                    </button>`;
+                                                    ${sub}
+                                                </button>`;
                 });
                 html += `</div></div>`;
             });
@@ -1888,6 +1888,26 @@
             if (savedMainCategories) mainCategories = JSON.parse(savedMainCategories);
             if (savedMainCat) currentMainCategory = savedMainCat;
 
+            // Remove "เซเว่นไนท์" if it exists in mainCategories
+            const index = mainCategories.indexOf('เซเว่นไนท์');
+            if (index !== -1) {
+                mainCategories.splice(index, 1);
+                delete subCategories['เซเว่นไนท์'];
+
+                // Migrate knights in "เซเว่นไนท์" to "อื่นๆ"
+                knightCollection.forEach(k => {
+                    if (k.mainCategory === 'เซเว่นไนท์') {
+                        k.mainCategory = 'อื่นๆ';
+                        k.subCategory = 'ทั้งหมด';
+                    }
+                });
+
+                if (currentMainCategory === 'เซเว่นไนท์') {
+                    currentMainCategory = 'ปรับแต่ง';
+                }
+                saveCollection();
+            }
+
             renderMainCategoryTabs();
             renderSubCategoryTabs();
             renderCollectionList();
@@ -2005,6 +2025,7 @@
         function resetCollection() {
             if (confirm('คุณแน่ใจหรือไม่ที่จะรีเซ็ตสมุดภาพอัศวินทั้งหมด? ข้อมูลอัศวินและหมวดหมู่ที่สร้างไว้จะถูกลบทั้งหมด (ไม่สามารถย้อนกลับได้)')) {
                 knightCollection = [];
+                mainCategories = ['ปรับแต่ง', 'พิเศษ', 'อัศวินทั่วไป', 'ทวีปอาร์เด', 'ทวีปไอชา', 'อื่นๆ'];
                 subCategories = {
                     'ปรับแต่ง': ['ทั้งหมด'],
                     'พิเศษ': ['ทั้งหมด'],
@@ -2018,6 +2039,7 @@
 
                 localStorage.removeItem('knightCollection');
                 localStorage.removeItem('subCategories');
+                localStorage.removeItem('mainCategories');
                 localStorage.removeItem('currentMainCategory');
 
                 saveCollection();
